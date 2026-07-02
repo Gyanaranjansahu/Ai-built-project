@@ -1,0 +1,113 @@
+.auth-blue-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, rgba(56, 189, 248, 0.2), transparent 32%),
+    linear-gradient(242deg, rgba(29, 78, 216, 0.34), transparent 36%),
+    linear-gradient(135deg, #020617 0%, #0b2b72 44%, #071a45 100%);
+}
+
+.auth-blue-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, transparent 0, rgba(2, 6, 23, 0.2) 58%, rgba(2, 6, 23, 0.56) 100%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 34%, rgba(96, 165, 250, 0.1));
+}
+
+.auth-bg-grid {
+  position: absolute;
+  inset: -60px;
+  opacity: 0.23;
+  background-image:
+    linear-gradient(rgba(147, 197, 253, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(147, 197, 253, 0.24) 1px, transparent 1px);
+  background-size: 45px 45px;
+  transform: perspective(900px) rotateX(58deg) scale(1.35);
+  transform-origin: center bottom;
+}
+
+.auth-bg-panel,
+.auth-bg-beam {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+
+.auth-bg-panel {
+  height: 170px;
+  border: 1px solid rgba(186, 230, 253, 0.2);
+  border-radius: 8px;
+  filter: blur(0.2px);
+  mix-blend-mode: screen;
+  transform: rotate(-18deg);
+}
+
+.auth-bg-panel-one {
+  width: 460px;
+  left: 8%;
+  top: 10%;
+  background: linear-gradient(110deg, rgba(125, 211, 252, 0.38), rgba(37, 99, 235, 0.05));
+}
+
+.auth-bg-panel-two {
+  width: 560px;
+  right: -7%;
+  top: 4%;
+  background: linear-gradient(105deg, rgba(59, 130, 246, 0.34), rgba(14, 165, 233, 0.04));
+}
+
+.auth-bg-panel-three {
+  width: 390px;
+  right: 20%;
+  bottom: 6%;
+  background: linear-gradient(112deg, rgba(14, 165, 233, 0.34), rgba(30, 64, 175, 0.05));
+}
+
+.auth-bg-panel-four {
+  width: 300px;
+  left: 22%;
+  bottom: 12%;
+  background: linear-gradient(112deg, rgba(191, 219, 254, 0.24), rgba(37, 99, 235, 0.04));
+}
+
+.auth-bg-beam {
+  width: 72vw;
+  height: 160px;
+  border-radius: 999px;
+  filter: blur(24px);
+  opacity: 0.28;
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.72), transparent);
+}
+
+.auth-bg-beam-one {
+  left: -18%;
+  top: 21%;
+  rotate: -18deg;
+}
+
+.auth-bg-beam-two {
+  right: -18%;
+  bottom: 15%;
+  rotate: 24deg;
+}
+
+@media (max-width: 600px) {
+  .auth-bg-grid {
+    opacity: 0.17;
+    transform: perspective(700px) rotateX(60deg) scale(1.7);
+  }
+
+  .auth-bg-panel-one,
+  .auth-bg-panel-two {
+    width: 330px;
+    height: 140px;
+  }
+
+  .auth-bg-beam {
+    width: 105vw;
+  }
+}
