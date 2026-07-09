@@ -1,7 +1,7 @@
 import { useState } from "react";
 // import "../style/login.css";
 import { motion } from "framer-motion"
-import useauth from "../../authentication/hookcontroll";
+import useauth from "../authentication/hookcontroll";
 import LoadingPage from "./loading";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../Nav";
