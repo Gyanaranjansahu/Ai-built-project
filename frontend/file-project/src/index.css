@@ -1,0 +1,60 @@
+/* src/index.css or src/app.css */
+@import "tailwindcss";
+@theme {
+  /* Backgrounds */
+  --color-bg: #0b0c0e;
+  --color-bg-soft: #111216;
+  --color-bg-elevated: #18191d;
+
+  /* Surfaces */
+  --color-surface: #141518;
+  --color-surface-alt: #1b1c20;
+  --color-surface-hover: #24262b;
+
+  /* Text */
+  --color-ink: #f5f3ee;
+  --color-muted: #9a9a94;
+  --color-muted-light: #b7b7b2;
+  --color-muted-dark: #6b6b67;
+
+  /* Borders */
+  --color-border: #2a2b2e;
+  --color-border-light: #3b3d42;
+  --color-border-strong: #4d5056;
+
+  /* Brand */
+  --color-amber: #e8a13d;
+  --color-amber-light: #f2bf63;
+  --color-amber-dark: #c9872b;
+
+  /* Success */
+  --color-emerald: #3ddc97;
+  --color-emerald-soft: rgb(61 220 151 / 0.08);
+  --color-emerald-dark: #20b875;
+
+  /* Status */
+  --color-red: #ef4444;
+  --color-yellow: #facc15;
+  --color-blue: #3b82f6;
+
+  /* Glow */
+  --color-glow-amber: rgb(232 161 61 / 0.18);
+  --color-glow-emerald: rgb(61 220 151 / 0.18);
+
+  /* Fonts */
+  --font-display: "General Sans", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Radius */
+  --radius-card: 1.25rem;
+  --radius-button: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 10px 30px rgb(0 0 0 / 0.25);
+  --shadow-card-hover: 0 20px 45px rgb(0 0 0 / 0.35);
+}
+@theme {
+  --color-gradient-start: #0b0c0e;
+  --color-gradient-mid: #141518;
+  --color-gradient-end: #1b1c20;
+}

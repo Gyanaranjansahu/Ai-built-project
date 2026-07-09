@@ -78,7 +78,7 @@ function buildFallbackInterviewReport() {
     ],
   };
 }
-
+console.log(process.env.GOOGLE_GENAI_API_KEY);
 async function GenInterview({
   resume,
   selfDescription,
@@ -141,7 +141,7 @@ Return JSON only.
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-2.0-flash",
       contents: prompt,
     });
 

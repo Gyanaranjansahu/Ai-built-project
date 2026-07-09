@@ -1,6 +1,6 @@
 import axios from "axios";
 let api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:4000",
   withCredentials: true,
 });
 // signup purpose
@@ -50,7 +50,7 @@ export async function Logout(){
 export async function userMe(){
 try {
     const response=await api.get("api/auth/user")
-    console.log(response?.data?.user.id);
+    // console.log(response?.data?.user.id);
     return response.data
 } catch (error) {
     throw error

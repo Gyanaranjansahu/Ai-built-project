@@ -6,9 +6,10 @@ import bcrypt from "bcrypt"
 dotenv.config()
   const verify=async(req,res)=>{
     let {email,password}=req.body
+    console.log(req.body)
     if(!email || !password){
         return res.status(400).json({
-            text:"all fields are required"
+            text:"all fields are required here"
         })
     }
     let exist=await connect.findOne({

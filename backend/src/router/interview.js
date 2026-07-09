@@ -17,5 +17,5 @@ function uploadResume(req,res,next){
 }
 
 // Use the controller here because it handles file parsing, AI generation, and database saving.
-interviewRouter.post("/",checkAuth,uploadResume,GenerateInterview)
+interviewRouter.post("/generate",checkAuth,uploadResume,GenerateInterview)
 export default interviewRouter
