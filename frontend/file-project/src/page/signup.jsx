@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "../style/signup.css";
-import { motion } from "framer-motion";
-import useauth from "../src/authentication/hookcontroll";
+
+import useauth from "../authentication/hookcontroll";
 import LoadingPage from "./loading";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Navbar from "../src/components/Nav";
+import Navbar from "../components/Nav";
 // import AuthBlueBackground from "../components/AuthBlueBackground";
 const Register = () => {
     const [name, setName] = useState("")

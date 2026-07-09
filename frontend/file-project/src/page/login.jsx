@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import useauth from "../authentication/hookcontroll";
 import LoadingPage from "./loading";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../Nav";
+import Navbar from "../components/Nav";
 // import AuthBlueBackground from "../components/AuthBlueBackground";
 function Login() {
 const[email,setEmail]=useState("")

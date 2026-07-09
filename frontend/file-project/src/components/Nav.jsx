@@ -1,7 +1,7 @@
 import { Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { authContext } from "../authentication/authcontect";
+import { authContext } from "../authentication/authcontect.jsx"
 
 export default function Navbar() {
   const {user} = useContext(authContext);
