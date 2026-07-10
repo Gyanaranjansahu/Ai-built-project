@@ -1,6 +1,6 @@
 import axios from "axios";
 let api = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "http://localhost:4000/",
   withCredentials: true,
 });
 // signup purpose

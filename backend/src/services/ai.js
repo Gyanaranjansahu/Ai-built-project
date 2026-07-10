@@ -132,7 +132,7 @@ Return EXACTLY this structure:
       "focus": "string",
       "tasks": ["string"]
     }
-  ]
+  ].length(7)
 }
 
 Do not return markdown.
@@ -141,7 +141,7 @@ Return JSON only.
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.1-flash-lite",
       contents: prompt,
     });
 
