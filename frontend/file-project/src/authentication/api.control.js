@@ -1,6 +1,6 @@
 import axios from "axios";
 let api = axios.create({
-  baseURL: "http://localhost:4000/",
+  baseURL: "https://ai-built-project-1.onrender.com",
   withCredentials: true,
 });
 // signup purpose
