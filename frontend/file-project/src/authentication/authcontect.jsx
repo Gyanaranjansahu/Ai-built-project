@@ -10,7 +10,7 @@ function Authprovider({children}){
             setLoading(true)
             let id= await userMe()
             console.log(id.user);
-            setUser(id?.user?.id)
+            setUser(id.user)
             return
             
           
@@ -25,7 +25,7 @@ function Authprovider({children}){
         }
         data()
     },[])
-    console.log("the user is  "+ user);
+    console.log( user);
     
     return(
     

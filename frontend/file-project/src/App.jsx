@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/signup" element= {<Register/>}/>
         <Route path="/analyze" element={<Protect><Analyze/></Protect>} />
 
-        <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/dashboard" element={<Protect><Dashboard/></Protect>}/>
         <Route path="*" element={<NotFound/>} />
       </Routes>
       {/* This container is required once so react-toastify can show messages anywhere in the app. */}

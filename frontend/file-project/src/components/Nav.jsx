@@ -1,13 +1,10 @@
 import { Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { authContext } from "../authentication/authcontect.jsx"
+import { authContext } from "../authentication/authcontect.jsx";
 
 export default function Navbar() {
-  const {user} = useContext(authContext);
-console.log(user);
-
-
+  const { user, loading } = useContext(authContext);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0F0B2E]/80 shadow-lg shadow-violet-950/20 backdrop-blur-xl">
@@ -20,9 +17,8 @@ console.log(user);
           <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 shadow-lg shadow-violet-900/30 ring-1 ring-violet-400/20">
             <Compass className="h-5 w-5 text-violet-300 drop-shadow-sm" strokeWidth={2.2} />
           </div>
-
           <span className="font-display text-2xl font-bold tracking-tight text-white">
-           Analyser
+            Analyser
           </span>
         </Link>
 
@@ -48,26 +44,23 @@ console.log(user);
         </nav>
 
         {/* Button */}
-       
-{
-  !user ?       <Link
+        {loading ? (
+          <div className="h-10 w-28 animate-pulse rounded-full bg-white/5" />
+        ) : !user ? (
+          <Link
             to="/signup"
             className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/40"
           >
             Get Started
-
-
-          
-            
-          </Link>:
-
-                    <Link
+          </Link>
+        ) : (
+          <Link
             to="/dashboard"
             className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/40"
           >
             Dashboard
           </Link>
-}
+        )}
       </div>
     </header>
   );

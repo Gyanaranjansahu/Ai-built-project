@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 // import "../style/login.css";
 import { motion } from "framer-motion"
 import useauth from "../authentication/hookcontroll";
 import LoadingPage from "./loading";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Nav";
+// import { authContext } from "../authentication/authcontect";
 // import AuthBlueBackground from "../components/AuthBlueBackground";
 function Login() {
 const[email,setEmail]=useState("")
 const[password,setPassword]=useState("")
     let {handleLogin,loading}=useauth()
+    // let {loading}=useContext(authContext())
  let navigate=useNavigate()
 
     const handleSubmit = async (e) => {

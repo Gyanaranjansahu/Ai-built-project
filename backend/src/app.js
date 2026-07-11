@@ -9,13 +9,18 @@ import userRoute from "./router/userroute.js";
 import interviewRouter from "./router/interview.js";
 
 connectDB()
+console.log(connectDB());
+
 let app=express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors(
   {
-    origin:["https://ai-built-project-analysis.vercel.app/","http://localhost:5173"],
-    credentials:true
+    origin:[
+      "https://ai-built-project-analysis.vercel.app"
+      ,"http://localhost:5173"
+    ],
+     credentials: true
   }
 ))
 app.use(express.json())

@@ -1,9 +1,12 @@
 import axios from "axios";
+
+
 let api = axios.create({
   baseURL: "https://ai-built-project-1.onrender.com",
   withCredentials: true,
 });
 // signup purpose
+
 export async function signup({email,name,password}){
     try {
         const response=await api.post("api/auth/register",{email,name,password})
@@ -22,6 +25,8 @@ export async function Login({email,password}){
         const response=await api.post("api/auth/login",{email,password})
         // Return user and message after successful login.
         return response.data
+        console.log(response.data);
+        
     } catch (error) {
         console.log(error.message);
         // Throw the error again so login page does not redirect on failed login.
@@ -50,7 +55,7 @@ export async function Logout(){
 export async function userMe(){
 try {
     const response=await api.get("api/auth/user")
-    // console.log(response?.data?.user.id);
+    console.log(response?.data);
     return response.data
 } catch (error) {
     throw error

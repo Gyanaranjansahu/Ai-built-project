@@ -10,12 +10,13 @@ import {
   X 
 } from "lucide-react";
 import Navbar from "./Nav";
+import useauth from "../authentication/hookcontroll";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   // const { user, handleLogout } = useauth(); // Adjust based on your hook's logout method
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
+const{handleLogout}=useauth()
   const onLogoutClick = async () => {
     // Basic logout wrapper
     if (handleLogout) {

@@ -13,8 +13,7 @@ dotenv.config()
         })
     }
     let exist=await connect.findOne({
-        email:email
-    })
+        email:email})
     if(!exist){
         return res.status(401).json({
             text:"user not exist"
@@ -30,14 +29,21 @@ dotenv.config()
     }
 
     let token =jwt.sign({id:exist._id},process.env.SECRET_KEY)
-    res.cookie("token",token)
+    res.cookie("token",token,{
+        httpOnly:true,
+        secure:true,
+        maxAge:7*24*60*60*1000,
+        sameSite: "none"
+    })
+
     return res.status(200).json({
         text:"login successful",
         token:token,
         user:{
             id:exist._id,
             name:exist.name,
-            email:exist.email
+            email:exist.email,
+            token:token,
         }
     })
 

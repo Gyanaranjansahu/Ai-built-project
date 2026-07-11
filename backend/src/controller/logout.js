@@ -2,7 +2,7 @@ import blacklist from "../schema/blacklistSchema.js";
 const Logout=async(req,res)=>{
     let token=req.cookies.token
     if(!token){
-        return res.status(400).json({
+        return res.status(404).json({
             text:"token not found"
         })
     }

@@ -22,7 +22,7 @@ try {
    token:usertoken,
     });
     if (userdata) {
-        return res.status(401).json({
+        return res.status(404).json({
            text:"token blacklisted" 
         })
     }
