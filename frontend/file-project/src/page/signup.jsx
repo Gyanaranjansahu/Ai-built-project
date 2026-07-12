@@ -107,9 +107,10 @@ const Register = () => {
                         {/* {error && <p className="text-sm text-red-400">{error}</p>} */}
 
                         <button
+
                             type="submit"
                             disabled={loading}
-                            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-violet-500 to-blue-500 text-white font-medium shadow-lg shadow-violet-900/40 ring-1 ring-white/10 hover:shadow-xl hover:shadow-violet-600/40 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+                            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-violet-500 to-blue-500 text-white font-medium shadow-lg shadow-violet-900/40 ring-1 ring-white/10 hover:shadow-xl hover:shadow-violet-600/40 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-lg cursor-pointer"
                         >
                             {loading ? "Creating account…" : "Create account"}
                         </button>

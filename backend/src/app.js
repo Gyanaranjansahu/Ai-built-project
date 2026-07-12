@@ -12,8 +12,7 @@ connectDB()
 console.log(connectDB());
 
 let app=express()
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+
 app.use(cors(
   {
     origin:[
@@ -23,6 +22,11 @@ app.use(cors(
      credentials: true
   }
 ))
+
+
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+
 app.use(express.json())
 app.use(cookieParser())
 try{

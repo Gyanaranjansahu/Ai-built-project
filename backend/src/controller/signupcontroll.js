@@ -32,18 +32,17 @@ export default async function add(req,res){
 
 /**create  a user inside database */
    try {
-     let create=await connect.insertOne({
+     let create=await connect.create({
         name:name,
         email:email,
         password:hashpass
     })
-   return  res.status(200).json({
-        text:"user created successfully",
-        name,
-        email,
+   return  res.status(201).json({
+        text:"Signup successfully",
         user:{
             name,
-            email
+            email,
+            password
         }
 
     })

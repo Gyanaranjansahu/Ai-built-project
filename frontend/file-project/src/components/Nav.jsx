@@ -2,9 +2,15 @@ import { Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { authContext } from "../authentication/authcontect.jsx";
+import LoadingPage from "../page/loading.jsx";
 
 export default function Navbar() {
   const { user, loading } = useContext(authContext);
+
+
+  if(loading){
+    return <LoadingPage/>
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0F0B2E]/80 shadow-lg shadow-violet-950/20 backdrop-blur-xl">
