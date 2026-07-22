@@ -10,7 +10,7 @@ const Protect = ({children}) => {
       return <LoadingPage/>
     }
     if(user==null){
-      return  <Navigate to="/login"/>
+      return  <Navigate to="/signup"/>
     }
   return children
 }

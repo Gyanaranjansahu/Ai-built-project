@@ -1,20 +1,35 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const userSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        unique:[true,"userName already exist"],
-        require:true
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+      minlength: [2, "Name must be at least 2 characters long"],
+      maxlength: [50, "Name cannot exceed 50 characters"]
     },
-    email:{
-        type:String,
-        unique:[true,"the mail already exist"],
-        require:true
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true, // Note: unique creates a MongoDB index, not a Mongoose schema validator
+      lowercase: true,
+      trim: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please enter a valid email address"
+      ]
     },
-    password:{
-        type:String,
-        require :true
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"]
     }
-})
-let connect=mongoose.model("user",userSchema)
-export default connect
+  },
+  {
+    timestamps: true // Automatically adds createdAt and updatedAt fields
+  }
+);
+
+const User = mongoose.model("User", userSchema);
+export default User;

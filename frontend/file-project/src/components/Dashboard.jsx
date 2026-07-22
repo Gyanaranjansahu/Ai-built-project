@@ -1,121 +1,243 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { 
-  BarChart3, 
-  Code2, 
-  HeartHandshake, 
-  LogOut, 
+import {
+  BarChart3,
+  Code2,
+  HeartHandshake,
+  LogOut,
   LayoutDashboard,
   Menu,
-  X 
+  X,
+  Sparkles,
+  FileSearch,
+  Target
 } from "lucide-react";
+
 import Navbar from "./Nav";
 import useauth from "../authentication/hookcontroll";
 
+
 export default function Dashboard() {
   const navigate = useNavigate();
-  // const { user, handleLogout } = useauth(); // Adjust based on your hook's logout method
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-const{handleLogout}=useauth()
+  const { handleLogout } = useauth();
+
   const onLogoutClick = async () => {
-    // Basic logout wrapper
-    if (handleLogout) {
-      await handleLogout();
-    }
+    if (handleLogout) await handleLogout();
     navigate("/login");
   };
 
+
   const navLinks = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "ATS Score", icon: BarChart3, path: "/dashboard/ats" },
-    { name: "Technical Question", icon: Code2, path: "/dashboard/technical" },
-    { name: "Behavioral Question", icon: HeartHandshake, path: "/dashboard/behavioral" },
+    { name:"Dashboard", icon:LayoutDashboard, path:"/dashboard" },
+    { name:"ATS Score", icon:BarChart3, path:"/dashboard/ats" },
+    { name:"Technical Question", icon:Code2, path:"/dashboard/technical" },
+    { name:"Behavioral Question", icon:HeartHandshake, path:"/dashboard/behavioral" },
   ];
 
+
   return (
-   <>
-   <Navbar/>
-    <div className="min-h-screen bg-[#0F0B2E] text-white flex flex-col md:flex-row relative overflow-hidden">
-      {/* Background Decorative Glows */}
-      <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
+    <>
+      <Navbar />
 
-      {/* Mobile Header Toggle */}
-      <div className="md:hidden flex items-center justify-between px-6 py-4 bg-[#1A1440]/50 backdrop-blur-xl border-b border-white/10 w-full z-50">
-        <span className="font-display text-lg font-semibold tracking-tight">Primer</span>
-        <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="p-1 text-slate-300 hover:text-white">
-          {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      <div className="min-h-screen bg-[#020617] text-white flex relative overflow-hidden">
+
+        <div className="absolute top-0 left-0 h-96 w-96 bg-violet-600/20 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 bg-cyan-500/10 blur-3xl rounded-full" />
+
+
+        {/* Mobile Button */}
+        <button
+          onClick={()=>setIsMobileOpen(!isMobileOpen)}
+          className="md:hidden fixed top-24 left-5 z-50 p-3 rounded-xl bg-white/10 backdrop-blur-xl"
+        >
+          {isMobileOpen ? <X/> : <Menu/>}
         </button>
-      </div>
 
-      {/* Sidebar Aside Navigation */}
-      <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-[#1A1440]/40 border-r border-white/10 p-6 backdrop-blur-xl flex flex-col justify-between transition-transform duration-300 ease-in-out transform
-        md:translate-x-0 md:static md:h-screen
-        ${isMobileOpen ? "translate-x-0 w-full max-w-[280px]" : "-translate-x-full"}
-      `}>
-        <div className="space-y-8">
-          {/* Brand/Logo Header */}
-          <div className="hidden md:flex items-center gap-2">
-            <span className="font-display text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-              Primer
-            </span>
+
+        {/* Sidebar */}
+        <aside className={`
+          fixed md:static z-40 top-0 left-0 h-full w-72
+          border-r border-white/10
+          bg-white/5 backdrop-blur-2xl
+          p-6 flex flex-col justify-between
+          transition-transform duration-300
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}>
+
+
+          <div>
+
+            <div className="flex items-center gap-3 mb-10">
+
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/30">
+                <Sparkles/>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold">
+                  Resume<span className="text-cyan-400">AI</span>
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Career Intelligence
+                </p>
+              </div>
+
+            </div>
+
+
+
+            <nav className="space-y-2">
+
+              {
+                navLinks.map(({name,icon:Icon,path})=>(
+                  <Link
+                    key={name}
+                    to={path}
+                    onClick={()=>setIsMobileOpen(false)}
+                    className="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    text-slate-300
+                    hover:text-white
+                    hover:bg-white/10
+                    transition
+                    "
+                  >
+                    <Icon size={18} className="text-cyan-400"/>
+                    {name}
+                  </Link>
+                ))
+              }
+
+            </nav>
+
           </div>
 
-          {/* Nav Links Stack */}
-          <nav className="space-y-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5 transition-all group"
-                  onClick={() => setIsMobileOpen(false)}
-                >
-                  <Icon className="w-4 h-4 text-violet-400 group-hover:text-violet-300 transition-colors" />
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
 
-        {/* Action Logout Block */}
-        <div className="pt-4 border-t border-white/5">
+
           <button
             onClick={onLogoutClick}
-            className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/5 border border-transparent hover:border-red-500/10 transition-all"
+            className="
+            flex items-center gap-3
+            px-4 py-3 rounded-xl
+            text-red-400
+            hover:bg-red-500/10
+            transition
+            "
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut size={18}/>
             Logout
           </button>
-        </div>
-      </aside>
 
-      {/* Main Container Layout */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-        {/* Persistent Welcome Header Row */}
-        <header className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-[#0F0B2E]/20 backdrop-blur-md">
-          <div>
-            <h1 className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-white">
-              Welcome, {name || "User"}!
+
+        </aside>
+
+
+
+
+        {/* Main */}
+        <div className="flex-1 min-w-0">
+
+          <header className="border-b border-white/10 bg-white/5 backdrop-blur-xl px-8 py-8">
+
+            <h1 className="text-3xl font-bold">
+              Welcome back 👋
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Here is your core prep suite snapshot.
-            </p>
-          </div>
-        </header>
 
-        {/* Blank Workspace Target Area */}
-        <main className="flex-1 p-8">
-          <div className="w-full h-full min-h-[450px] bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl shadow-xl ring-1 ring-white/5 p-6 flex items-center justify-center text-slate-500 border-dashed">
-            {/* Inject your specific page elements right inside here */}
-            <p className="font-mono text-sm uppercase tracking-wider">Empty Workspace Container</p>
-          </div>
-        </main>
+            <p className="text-slate-400 mt-2">
+              Your AI career preparation dashboard.
+            </p>
+
+          </header>
+
+
+
+          <main className="p-6 md:p-10">
+
+
+            {/* Stats */}
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+
+
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+
+                <FileSearch className="text-violet-400 mb-4"/>
+
+                <h3 className="text-2xl font-bold">
+                  Resume Scan
+                </h3>
+
+                <p className="text-slate-400 text-sm mt-2">
+                  Analyze your resume with AI.
+                </p>
+
+              </div>
+
+
+
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+
+                <Target className="text-cyan-400 mb-4"/>
+
+                <h3 className="text-2xl font-bold">
+                  ATS Score
+                </h3>
+
+                <p className="text-slate-400 text-sm mt-2">
+                  Improve job matching chances.
+                </p>
+
+              </div>
+
+
+
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+
+                <BarChart3 className="text-emerald-400 mb-4"/>
+
+                <h3 className="text-2xl font-bold">
+                  Career Insights
+                </h3>
+
+                <p className="text-slate-400 text-sm mt-2">
+                  Get personalized suggestions.
+                </p>
+
+              </div>
+
+
+            </div>
+
+
+
+
+            {/* Workspace */}
+
+            <div className="
+            min-h-[350px]
+            rounded-3xl
+            border border-white/10
+            bg-white/5
+            backdrop-blur-xl
+            flex items-center justify-center
+            text-slate-400
+            ">
+
+              Your AI workspace will appear here
+
+            </div>
+
+
+          </main>
+
+
+        </div>
+
+
       </div>
-    </div>
-   </>
+
+    </>
   );
 }

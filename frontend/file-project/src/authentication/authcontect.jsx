@@ -15,9 +15,9 @@ function Authprovider({children}){
             
           
            } catch (error) {
-           
+           console.log(error.message)
             setUser(null)
-             throw error
+             
            }
            finally{
             setLoading(false)

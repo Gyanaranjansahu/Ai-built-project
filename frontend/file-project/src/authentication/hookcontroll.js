@@ -82,14 +82,6 @@ export default function useauth() {
     }
   };
   
-  // useEffect(() => {
-  //   const Data = async () => {
-  //     let userdata = await userMe();
-  //     console.log(userdata);
-  //     setLoading(false);
-  //   };
-  //   Data();
-  // }, []);
 
   return {
     user,

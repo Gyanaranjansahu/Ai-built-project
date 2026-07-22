@@ -1,24 +1,21 @@
 import express from "express"
 import signup from "./router/authrouter.js"
 import cors from "cors"
-import connectDB from "./config/database.js";
+// import connectDB from "./config/database.js";
 import Login from "./router/loginroute.js";
 import cookieParser from "cookie-parser"
 import LogoutRoute from "./router/logoutroute.js";
 import userRoute from "./router/userroute.js";
 import interviewRouter from "./router/interview.js";
-
-connectDB()
-console.log(connectDB());
+import dotenv from "dotenv"
+dotenv.config()
+// connectDB()
 
 let app=express()
 
 app.use(cors(
   {
-    origin:[
-      "https://ai-built-project-analysis.vercel.app"
-      ,"http://localhost:5173"
-    ],
+    origin:["http://localhost:5173"],
      credentials: true
   }
 ))

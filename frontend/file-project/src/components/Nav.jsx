@@ -1,73 +1,308 @@
-import { Compass } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { authContext } from "../authentication/authcontect.jsx";
-import LoadingPage from "../page/loading.jsx";
+import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import {
+  Menu,
+  X,
+  Sparkles,
+  BrainCircuit
+} from "lucide-react";
 
-export default function Navbar() {
-  const { user, loading } = useContext(authContext);
+
+const Nav = () => {
+
+  const [open, setOpen] = useState(false);
 
 
-  if(loading){
-    return <LoadingPage/>
-  }
+  const links = [
+    {
+      name: "Home",
+      path: "/"
+    },
+    {
+      name: "Services",
+      path: "/services"
+    },
+    {
+      name: "About",
+      path: "/about"
+    },
+    {
+      name: "Contact",
+      path: "/contact"
+    }
+  ];
+
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0F0B2E]/80 shadow-lg shadow-violet-950/20 backdrop-blur-xl">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
-        {/* Logo */}
+
+    <header className="
+    fixed
+    top-0
+    left-0
+    w-full
+    z-50
+    bg-[#020617]/80
+    backdrop-blur-xl
+    border-b
+    border-white/10
+    ">
+
+      <nav className="
+      max-w-7xl
+      mx-auto
+      px-6
+      lg:px-8
+      h-20
+      flex
+      items-center
+      justify-between
+      ">
+
+
+        {/* Premium Logo */}
+
         <Link
           to="/"
-          className="flex items-center gap-3 transition-transform duration-300 hover:scale-105"
+          className="flex items-center gap-3"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-violet-500/20 to-blue-500/20 shadow-lg shadow-violet-900/30 ring-1 ring-violet-400/20">
-            <Compass className="h-5 w-5 text-violet-300 drop-shadow-sm" strokeWidth={2.2} />
+
+          <div
+            className="
+          relative
+          flex
+          items-center
+          justify-center
+          h-11
+          w-11
+          rounded-2xl
+          bg-gradient-to-br
+          from-violet-500
+          via-blue-500
+          to-cyan-400
+          shadow-lg
+          shadow-violet-500/30
+          "
+          >
+
+            <BrainCircuit
+              className="text-white"
+              size={27}
+            />
+
+            <Sparkles
+              size={12}
+              className="
+            absolute
+            -top-1
+            -right-1
+            text-yellow-300
+            "
+            />
+
           </div>
-          <span className="font-display text-2xl font-bold tracking-tight text-white">
-            Analyser
-          </span>
+
+
+          <div>
+
+            <h1
+              className="
+            text-xl
+            font-bold
+            tracking-tight
+            text-white
+            "
+            >
+              Resume
+              <span className="text-cyan-400">
+                AI
+              </span>
+            </h1>
+
+
+            <p
+              className="
+            text-[10px]
+            uppercase
+            tracking-[0.2em]
+            text-slate-400
+            "
+            >
+              Smart Career Engine
+            </p>
+
+
+          </div>
+
+
         </Link>
 
-        {/* Navigation */}
-        <nav className="hidden items-center gap-8 md:flex">
+
+
+        {/* Desktop Menu */}
+
+        <div
+          className="
+        hidden
+        md:flex
+        items-center
+        gap-9
+        "
+        >
+
+          {
+            links.map((link) => (
+
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) =>
+                  `
+              relative
+              text-sm
+              font-medium
+              transition
+              ${isActive
+                    ?
+                    "text-cyan-400"
+                    :
+                    "text-slate-300 hover:text-white"
+                  }
+              `
+                }
+              >
+
+                {link.name}
+
+
+              </NavLink>
+
+            ))
+          }
+
+
           <Link
-            to="/"
-            className="group relative text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-violet-300"
+            to="/analyze"
+            className="
+          rounded-xl
+          bg-gradient-to-r
+          from-violet-500
+          to-blue-500
+          px-6
+          py-3
+          text-sm
+          font-semibold
+          text-white
+          shadow-lg
+          shadow-violet-500/30
+          transition
+          hover:-translate-y-1
+          hover:shadow-violet-500/50
+          "
           >
-            Home
-            <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-violet-400 to-blue-400 transition-all duration-300 group-hover:w-full" />
+            Analyze Resume
           </Link>
 
-          {user && (
+
+        </div>
+
+
+
+
+        {/* Mobile Button */}
+
+        <button
+          onClick={() => setOpen(!open)}
+          className="
+        md:hidden
+        text-white
+        "
+        >
+
+          {
+            open
+              ?
+              <X size={30} />
+              :
+              <Menu size={30} />
+          }
+
+
+        </button>
+
+
+
+      </nav>
+
+
+
+      {/* Mobile Menu */}
+
+      {
+        open && (
+
+          <div
+            className="
+          md:hidden
+          bg-[#020617]
+          border-t
+          border-white/10
+          px-6
+          py-6
+          space-y-5
+          "
+          >
+
+            {
+              links.map((link) => (
+
+                <NavLink
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setOpen(false)}
+                  className="
+                block
+                text-slate-300
+                hover:text-cyan-400
+                text-lg
+                "
+                >
+
+                  {link.name}
+
+                </NavLink>
+
+              ))
+            }
+
+
             <Link
               to="/analyze"
-              className="group relative text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-violet-300"
+              className="
+            block
+            text-center
+            rounded-xl
+            bg-gradient-to-r
+            from-violet-500
+            to-blue-500
+            py-3
+            font-semibold
+            text-white
+            "
             >
-              Analyze
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-violet-400 to-blue-400 transition-all duration-300 group-hover:w-full" />
+              Analyze Resume
             </Link>
-          )}
-        </nav>
 
-        {/* Button */}
-        {loading ? (
-          <div className="h-10 w-28 animate-pulse rounded-full bg-white/5" />
-        ) : !user ? (
-          <Link
-            to="/signup"
-            className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/40"
-          >
-            Get Started
-          </Link>
-        ) : (
-          <Link
-            to="/dashboard"
-            className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/40"
-          >
-            Dashboard
-          </Link>
-        )}
-      </div>
+
+          </div>
+
+        )
+      }
+
+
     </header>
+
   );
-}
+};
+
+
+export default Nav;
