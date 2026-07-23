@@ -7,8 +7,8 @@ import cookieParser from "cookie-parser"
 import LogoutRoute from "./router/logoutroute.js";
 import userRoute from "./router/userroute.js";
 import interviewRouter from "./router/interview.js";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv/config"
+// dotenv.config()
 // connectDB()
 
 let app=express()
