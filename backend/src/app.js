@@ -16,7 +16,7 @@ let app=express()
 app.use(cors(
   {
     origin:[
-   " https://ai-built-project-u.vercel.app"
+   "https://airesumeanalyzer-nu.vercel.app"
       ,
       
       "http://localhost:5173"],
