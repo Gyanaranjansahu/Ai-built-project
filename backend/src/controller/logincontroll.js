@@ -1,7 +1,7 @@
 import connect from "../schema/model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
+import cookies from "cookies"
 export default async function verify(req, res) {
   const { email, password } = req.body;
 
@@ -24,13 +24,16 @@ export default async function verify(req, res) {
     }
 
     // 4. Token & Cookie
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
-    res.cookie("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    const token = jwt.sign({ id: user._id , email:user.email}, process.env.SECRET_KEY);
+    res.cookies("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+let cooks=req.cookies.token
+console.log(cooks + "is ");
 
     return res.status(200).json({
       text: "Login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email },
+      cookie:cooks
     });
 
   } catch (error) {

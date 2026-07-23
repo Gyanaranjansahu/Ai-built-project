@@ -15,7 +15,11 @@ let app=express()
 
 app.use(cors(
   {
-    origin:["http://localhost:5173"],
+    origin:[
+      process.env.FRONT_END
+      ,
+      
+      "http://localhost:5173"],
      credentials: true
   }
 ))
