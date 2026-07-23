@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 let api = axios.create({
-  baseURL: "http://localhost:4000/",
+  baseURL: "https://ai-resume-analyzer-jl6l.onrender.com",
   withCredentials: true,
 });
 // signup purpose
