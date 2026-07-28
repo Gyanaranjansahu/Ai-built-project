@@ -15,12 +15,11 @@ let app = express();
 
 app.use(
   cors({
-    origin: ["https://airesumeanalyzer-nu.vercel.app", "http://localhost:5173"],
+    origin: ["http://localhost:5173"],
     credentials: true,
   }),
 );
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());

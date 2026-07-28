@@ -1,39 +1,44 @@
 import jwt from "jsonwebtoken";
-import blacklist from "../schema/blacklistSchema.js";
 import dotenv from "dotenv";
-import { text } from "express";
-dotenv.config();
-async function checkAuth(req, res, next) {
-  let usertoken = req.cookies.token;
-  if (!usertoken) {
-   return  res.status(401).json({
-      text: "token not found",
-    });
-  }
-try {
-  let user = jwt.verify(usertoken, process.env.SECRET_KEY);
-  if (!user) {
-    return res.status(401).json({
-      text: "invalid credential",
-    });
-  }
-  
-    let userdata = await blacklist.findOne({
-   token:usertoken,
-    });
-    if (userdata) {
-        return res.status(404).json({
-           text:"token blacklisted" 
-        })
-    }
-    req.user=user
-    next();
+import blacklist from "../schema/blacklistSchema.js";
 
+dotenv.config();
+
+const checkAuth = async (req, res, next) => {
+  try {
+    // Get token from cookies
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        text: "Token not found",
+      });
+    }
+
+    // Verify JWT
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+    // Check blacklist
+    const blacklistedToken = await blacklist.findOne({ token });
+
+    if (blacklistedToken) {
+      return res.status(401).json({
+        success: false,
+        text: "Token has been blacklisted",
+      });
+    }
+
+    // Save decoded user information
+    req.user = decoded;
+
+    next();
   } catch (error) {
     return res.status(401).json({
-text:error.message
-    })
+      success: false,
+      text: error.message,
+    });
   }
-}
+};
 
 export default checkAuth;

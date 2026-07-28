@@ -2,71 +2,65 @@ import connect from "../schema/model.js";
 import bcrypt from "bcrypt";
 
 export default async function add(req, res) {
-  let { name, email, password } = req.body;
-
-  // 1. Basic empty field check
-  if (!name || !email || !password) {
-    return res.status(400).json({
-      text: "All fields are required"
-    });
-  }
-
   try {
-    // 2. Check if user already exists
-    let exist = await connect.findOne({
-      $or: [{ name }, { email }]
-    });
+    const { name, email, password } = req.body;
 
-    if (exist) {
-      return res.status(409).json({
-        // 409 Conflict is better suited for duplicate users than 401 Unauthorized
-        text: "User already exists",
-        name,
-        email
+    // Basic empty field check
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
       });
     }
 
-    // 3. Hash password
-    let hashpass = await bcrypt.hash(password, 10);
+    // Hash password
+    const hashpass = await bcrypt.hash(password, 10);
 
-    // 4. Create user inside database
-    let create = await connect.create({
+    // Create user
+    const user = await connect.create({
       name,
       email,
-      password: hashpass
+      password: hashpass,
     });
 
     return res.status(201).json({
-      text: "Signup successfully",
+      success: true,
+      message: "Signup successfully",
       user: {
-        id: create._id,
-        name: create.name,
-        email: create.email
-        // Note: Never return the password (hashed or raw) in the response!
-      }
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
-
   } catch (error) {
-    // Catch Mongoose Validation Errors (e.g. minlength, pattern match)
+    console.error(error);
+
+    // Mongoose Validation Error
     if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map((err) => err.message);
+      const errors = Object.values(error.errors).map((err) => err.message);
+
       return res.status(400).json({
-        text: "Validation Error",
-        errors: messages
+        success: false,
+        message: "Validation Error",
+        errors,
       });
     }
 
-    // Catch MongoDB Duplicate Key Error (Code 11000) for unique constraints
+    // MongoDB Duplicate Key Error
     if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+
       return res.status(409).json({
-        text: "Duplicate key error: field already exists"
+        success: false,
+        message: `${field} already exists`,
       });
     }
 
-    // Generic server error for anything unexpected
-    console.error("Error creating user:", error);
+    // Internal Server Error
     return res.status(500).json({
-      text: "Internal server error"
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
 }

@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Eye, EyeOff, BrainCircuit, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import useauth from "../authentication/hookcontroll";
 import LoadingPage from "./loading";
+import { authContext, Authprovider } from "../authentication/authcontect";
 import Navbar from "../components/Nav";
-
-
 function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+const{authLoading, refreshUser}=useContext(authContext)
 
   const { handleLogin, loading } = useauth();
 
@@ -42,13 +41,12 @@ function Login() {
     });
 
 
-
-    if (res.success) {
+    if (res) {
 
       setEmail("");
       setPassword("");
 
-      navigate("/");
+      navigate("/dashboard");
 
     }
     else {
@@ -63,7 +61,7 @@ function Login() {
 
 
 
-  if (loading) {
+  if (authLoading) {
 
     return <LoadingPage />
 

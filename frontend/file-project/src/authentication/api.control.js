@@ -1,80 +1,110 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
-
-let api = axios.create({
-  baseURL: "https://ai-resume-analyzer-jl6l.onrender.com",
+const api = axios.create({
+  baseURL: "http://localhost:4000",
   withCredentials: true,
 });
-// signup purpose
 
-export async function signup({email,name,password}){
-    try {
-        const response=await api.post("api/auth/register",{email,name,password})
-        // Return backend data so the hook can show the success message in toast.
-        return response.data
-    } catch (error) {
-        console.log(error.message);
-        // Throw the error again so the hook can catch it and show error toast.
-        throw error
-    }
-}
-// login page
+// Common Error Handler
+const handleError = (error) => {
+  console.error("API Error:", error.response?.data || error.message);
 
-export async function Login({email,password}){
-    try {
-        const response=await api.post("api/auth/login",{email,password})
-        // Return user and message after successful login.
-        return response.data
-        console.log(response.data);
-        
-    } catch (error) {
-        console.log(error.message);
-        // Throw the error again so login page does not redirect on failed login.
-        throw error
-    }
-}
+  const data = error.response?.data;
 
+  // Validation Errors
+  if (data?.errors && Array.isArray(data.errors)) {
+    data.errors.forEach((err) => toast.error(err));
+  }
+  // Normal Error Message
+  else if (data?.message) {
+    toast.error(data.message);
+  } else if (data?.text) {
+    toast.error(data.text);
+  }
+  // Axios Error
+  else {
+    toast.error(error.message || "Something went wrong");
+  }
 
+  throw error;
+};
 
+// Signup
+export async function signup({ email, name, password }) {
+  try {
+    const { data } = await api.post("/api/auth/register", {
+      email,
+      name,
+      password,
+    });
 
+    toast.success(data.message || data.text);
 
-// logout
-export async function Logout(){
-    try {
-        const response=await api.get("api/auth/logout")
-        // Return logout message so we can show it with toast.
-        return response.data
-    } catch (error) {
-        console.log(error.message);
-        // Throw the error again so logout errors can also be displayed.
-        throw error
-    }
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
 }
 
-// user
-export async function userMe(){
-try {
-    const response=await api.get("api/auth/user")
-    console.log(response?.data);
-    return response.data
-} catch (error) {
-    throw error
-    
-}
+// Login
+export async function login({ email, password }) {
+  try {
+    const { data } = await api.post("/api/auth/login", {
+      email,
+      password,
+    });
+
+    toast.success(data.message || data.text);
+
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
 }
 
-// This sends resume as multipart/form-data to the interview backend endpoint.
-export async function generateInterview({resume,selfDescription,jobDescription}){
-    try {
-        const formData=new FormData()
-        formData.append("resume",resume)
-        formData.append("selfDescription",selfDescription)
-        formData.append("jobDescription",jobDescription)
-        const response=await api.post("api/interview",formData)
-        return response.data
-    } catch (error) {
-        console.log(error.message);
-        // Throw error again so the page/hook can show the backend message.
-        throw error
-    }
+// Logout
+export async function logout() {
+  try {
+    const { data } = await api.get("/api/auth/logout");
+
+    toast.success(data.message || data.text);
+
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Current User
+export async function userMe() {
+  try {
+    const { data } = await api.get("/api/auth/user");
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Generate Interview
+export async function generateInterview({
+  resume,
+  selfDescription,
+  jobDescription,
+}) {
+  try {
+    const formData = new FormData();
+
+    formData.append("resume", resume);
+    formData.append("selfDescription", selfDescription);
+    formData.append("jobDescription", jobDescription);
+
+    const { data } = await api.post("/api/interview", formData);
+
+    toast.success(data.message || data.text);
+
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
 }

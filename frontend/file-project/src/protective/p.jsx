@@ -1,18 +1,20 @@
-import React from 'react'
-import { useContext } from 'react'
-import { authContext } from '../authentication/authcontect'
-import { Navigate } from 'react-router-dom'
-import LoadingPage from '../page/loading.jsx'
-const Protect = ({children}) => {
-  // const navigate=useNavigate()
-    const{user , loading}=useContext((authContext))
-    if(loading){
-      return <LoadingPage/>
-    }
-    if(user==null){
-      return  <Navigate to="/signup"/>
-    }
-  return children
-}
+import { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { authContext } from "../authentication/authcontect";
+import LoadingPage from "../page/loading";
+
+const Protect = ({ children }) => {
+  const { user, authLoading } = useContext(authContext);
+
+  if (authLoading) {
+    return <LoadingPage />;
+  }
+
+  if (!user) {
+    return <Navigate to="/signup" replace />;
+  }
+
+  return children;
+};
 
 export default Protect

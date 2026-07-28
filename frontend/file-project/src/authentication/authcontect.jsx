@@ -1,37 +1,43 @@
 import { createContext, useEffect, useState } from "react";
 import { userMe } from "./api.control";
-const authContext=createContext()
-function Authprovider({children}){
-    const[user,setUser]=useState(null)
-    const[loading,setLoading]=useState(true)
-    useEffect(()=>{
-        async function data(){
-           try {
-            setLoading(true)
-            let id= await userMe()
-            console.log(id.user);
-            setUser(id.user)
-            return
-            
-          
-           } catch (error) {
-           console.log(error.message)
-            setUser(null)
-             
-           }
-           finally{
-            setLoading(false)
-           }
-        }
-        data()
-    },[])
-    console.log( user);
-    
-    return(
-    
-    <authContext.Provider value={{user,setUser,loading,setLoading}}>
-        {children}
+
+export const authContext = createContext();
+
+export function Authprovider({ children }) {
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const refreshUser = async () => {
+    try {
+      const data = await userMe();
+      console.log(data);
+      
+      setUser(data);
+      console.log(user);
+      
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
+console.log(user);
+
+  return (
+    <authContext.Provider
+      value={{
+        user,
+        setUser,
+        authLoading,
+        refreshUser,
+      }}
+    >
+      {children}
     </authContext.Provider>
-    )
+  );
 }
-export {authContext ,Authprovider}
