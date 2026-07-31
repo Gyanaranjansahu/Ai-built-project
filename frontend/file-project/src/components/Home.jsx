@@ -255,7 +255,7 @@ group-hover:translate-x-1
 
 <Link
 
-to="/signup"
+to="/dashboard"
 
 className="
 rounded-xl

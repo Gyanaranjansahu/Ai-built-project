@@ -7,6 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import Protect from "./protective/p";
 import LoadingPage from "./page/loading.jsx";
 import { authContext } from "./authentication/authcontect.jsx";
+import BehavioralQuestions from "../src/dashboard/BehavioralQuestions.jsx";
+import TechnicalQuestions from "../src/dashboard/TechnicalQuestions.jsx";
+import MatchScore from "../src/dashboard/MatchScore.jsx";
+import PreparationPlan from "../src/dashboard/PreparationPlan.jsx";
 
 const Home = lazy(() => import("./components/Home.jsx"));
 const Login = lazy(() => import("./page/login.jsx"));
@@ -48,14 +52,13 @@ export default function App() {
             }
           />
 
-          <Route
-            path="/dashboard"
-            element={
-              <Protect>
-                <Dashboard />
-              </Protect>
-            }
-          />
+          <Route path="/dashboard" element={<Protect><Dashboard /> </Protect>}>
+          
+          <Route path="behavioral/:id"  element={<BehavioralQuestions/>}/>
+          <Route path="technical/:id"  element={<TechnicalQuestions/>}/>
+          <Route path="matchscore/:id"  element={<MatchScore/>}/>
+          <Route path="7-day-plan/:id" element={<PreparationPlan/>}/>
+          </Route>
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />

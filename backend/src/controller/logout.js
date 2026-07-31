@@ -7,7 +7,7 @@ const Logout=async(req,res)=>{
         })
     }
     try {
-        let add= await blacklist.insertOne({
+        let add= await blacklist.create({
             token:token
         })
         res.clearCookie("token")

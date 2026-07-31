@@ -36,8 +36,11 @@ try {
 
   // Interview generate API has its own clear route: POST /api/interview
   app.use("/api/interview", interviewRouter);
-  // This keeps an auth-prefixed route also available: POST /api/auth/interview
-  app.use("/api/auth/interview", interviewRouter);
+ 
+
+
+ 
+
 } catch (error) {
   console.log(error.message);
 }
