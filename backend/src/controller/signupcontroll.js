@@ -24,7 +24,7 @@ export default async function add(req, res) {
       password: hashpass,
     });
 
-await sendEmail({
+ sendEmail({
   to: user.email,
   subject: "Welcome to My Application 🎉",
 
