@@ -11,7 +11,7 @@ const Protect = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/analyze" replace />;
+    return <Navigate to="/signup" replace />;
   }
 
   return children;
