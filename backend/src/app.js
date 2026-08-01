@@ -2,6 +2,7 @@ import dotenv from "dotenv/config";
 import express from "express";
 import signup from "./router/authrouter.js";
 import cors from "cors";
+import "./config/mailer.js";
 // import connectDB from "./config/database.js";
 import Login from "./router/loginroute.js";
 import cookieParser from "cookie-parser";
