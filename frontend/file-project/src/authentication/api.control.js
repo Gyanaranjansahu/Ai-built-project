@@ -35,7 +35,7 @@ export async function signup({ email, name, password }) {
       password,
     });
 
-    toast.success(data.message);
+    toast.success(data?.message);
 
     return data;
   } catch (error) {
@@ -53,7 +53,7 @@ export async function login({ email, password }) {
       password,
     });
 
-    toast.success(data.message);
+    toast.success(data?.message);
 
     return data;
   } catch (error) {
@@ -68,7 +68,7 @@ export async function logout() {
   try {
     const { data } = await api.get("/api/auth/logout");
 
-    toast.success(data.message);
+    toast.success(data?.message);
 
     return data;
   } catch (error) {
@@ -85,7 +85,7 @@ export async function userMe() {
 
     return data;
   } catch (error) {
-    if (error.response?.status === 401) {
+    if (error?.response?.status === 401) {
       return null;
     }
 
@@ -117,7 +117,7 @@ export async function generateInterview({
       formData
     );
 
-    toast.success(data.message);
+    toast.success(data?.message);
     return data;
   } catch (error) {
     handleError(error);

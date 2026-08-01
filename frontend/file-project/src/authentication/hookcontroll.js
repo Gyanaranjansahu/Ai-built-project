@@ -82,7 +82,7 @@ const getReportById=async(interviewId)=>{
   
   try {
     const response=await getInterviewReportById(interviewId)
-    setReport(response.InterviewReport)
+    // setReport(response.InterviewReport)
   
     // console.log(report);
     return response
