@@ -10,11 +10,15 @@ const email_transport = nodemailer.createTransport({
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
+
+  tls: {
+    rejectUnauthorized: false,
+    ciphers: "SSLv3",
+  },
   // Render latency handling ke liye Timeouts badha dein
-  connectionTimeout: 30000, // 30 seconds
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
-  dnsTimeout: 30000,
+connectionTimeout: 10000, // Reduced to 10s to fail fast
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 });
 
 email_transport.verify((error) => {
