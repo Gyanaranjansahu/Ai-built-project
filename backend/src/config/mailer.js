@@ -2,33 +2,19 @@ import "dotenv/config";
 import nodemailer from "nodemailer";
 
 const email_transport = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,            // ⚠️ 465 ki jagah 587 use karein
-  secure: false,         // 587 ke saath mandatory false hota hai (STARTTLS)
-  family: 4,
+  service: "gmail", // 🔹 Render ke port 587 block issue ko bypass karne ke liye service use karein
+  family: 4,        // 🔹 Force IPv4
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
-
   tls: {
-    rejectUnauthorized: false,
-    ciphers: "SSLv3",
+    rejectUnauthorized: false, // ⚠️ SSLv3 mat likhna! Sirf self-signed certificate handle karne ke liye ye rakhein.
   },
-  // Render latency handling ke liye Timeouts badha dein
-connectionTimeout: 10000, // Reduced to 10s to fail fast
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
 });
-
-email_transport.verify((error) => {
-  if (error) {
-    console.error("❌ SMTP Connection Failed:", error.message);
-  } else {
-    console.log("✅ SMTP Server Ready to send emails!");
-  }
-});
-
 const sendEmail = async ({ to, subject, text, html }) => {
   try {
     if (!process.env.EMAIL || !process.env.PASSWORD) {
