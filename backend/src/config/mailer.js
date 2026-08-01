@@ -3,9 +3,9 @@ import nodemailer from "nodemailer";
 
 const email_transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // SSL
-  family:4,
+  port: 587,            // ⚠️ 465 ki jagah 587 use karein
+  secure: false,         // 587 ke saath mandatory false hota hai (STARTTLS)
+  family: 4,
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
@@ -32,7 +32,7 @@ const sendEmail = async ({ to, subject, text, html }) => {
     }
 
     const result = await email_transport.sendMail({
-      from: `"AI Resume Analyzer" <${process.env.EMAIL}>`,
+      from: `<${process.env.EMAIL}>`,
       to,
       subject,
       text,
