@@ -46,7 +46,7 @@ const{authLoading, refreshUser}=useContext(authContext)
       setEmail("");
       setPassword("");
 
-      navigate("/dashboard");
+      navigate("/analyze");
 
     }
     else {
