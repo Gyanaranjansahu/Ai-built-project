@@ -1,4 +1,4 @@
-import pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 import GenInterview from "../services/ai.js";
 import interviewReportModel from "../schema/interview.model.js";
 
@@ -11,7 +11,11 @@ async function GenerateInterview(req, res) {
     }
 
     // Extract text from PDF
-    const pdfData = await pdf(req.file.buffer);
+    const parser = new PDFParse({
+      data: new Uint8Array(req.file.buffer),
+    });
+
+    const pdfData = await parser.getText();
 
     const { selfDescription, jobDescription } = req.body;
 
@@ -20,8 +24,6 @@ async function GenerateInterview(req, res) {
       selfDescription,
       jobDescription,
     });
-
-    console.log(JSON.stringify(interViewReportByAi, null, 2));
 
     const interviewReport = await interviewReportModel.create({
       user: req.user.id,
@@ -44,7 +46,6 @@ async function GenerateInterview(req, res) {
   }
 }
 
-// Get interview report by ID
 async function getInterviewReportById(req, res) {
   const { interviewId } = req.params;
 
@@ -64,7 +65,6 @@ async function getInterviewReportById(req, res) {
   });
 }
 
-// Get all interviews
 async function getAllInterview(req, res) {
   const interviewReport = await interviewReportModel
     .find({
@@ -72,7 +72,7 @@ async function getAllInterview(req, res) {
     })
     .sort({ createdAt: -1 })
     .select(
-      "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps",
+      "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps"
     );
 
   res.status(200).json({
@@ -81,4 +81,8 @@ async function getAllInterview(req, res) {
   });
 }
 
-export { GenerateInterview, getInterviewReportById, getAllInterview };
+export {
+  GenerateInterview,
+  getInterviewReportById,
+  getAllInterview,
+};
