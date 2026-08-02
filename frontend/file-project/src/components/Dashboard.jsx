@@ -203,50 +203,148 @@ export default function Dashboard() {
       <div className="flex-1 min-w-0 flex flex-col h-full overflow-y-auto">
         
         {/* Header Bar */}
-        <header className="sticky top-0 z-30 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3">
-          
-          <div className="flex items-center gap-3 min-w-0">
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileOpen(true)}
-              className="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-white/10 text-slate-200 hover:text-white hover:bg-slate-800 active:scale-95 transition shrink-0"
-              aria-label="Open menu"
-            >
-              <Menu size={20} />
-            </button>
+     {/* Header Bar */}
+<header className="sticky top-0 z-30 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3">
 
-            <div className="truncate">
-              <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight flex items-center gap-1.5 truncate">
-                <span className="truncate">
-                  Welcome back, {user?.displayName ? user.displayName.split(" ")[0] : "Developer"}
-                </span>
-                <span className="inline-block animate-bounce text-sm sm:text-base shrink-0">👋</span>
-              </h1>
-              <p className="text-slate-400 text-xs sm:text-sm hidden sm:block mt-0.5 truncate">
-                Your AI-powered career growth workspace.
-              </p>
+  {/* Left Section */}
+  <div className="flex items-center gap-3 min-w-0">
+
+    {/* Mobile Menu */}
+    <button
+      onClick={() => setIsMobileOpen(true)}
+      className="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-white/10 text-slate-200 hover:text-white hover:bg-slate-800 transition"
+    >
+      <Menu size={20}/>
+    </button>
+
+
+    <div className="truncate">
+
+      <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+
+        Welcome back,
+
+        <span className="text-cyan-400">
+          {
+            user?.data?.name
+            ? user.data.name.split(" ")[0]
+            : "Developer"
+          }
+        </span>
+
+        <span>
+          👋
+        </span>
+
+      </h1>
+
+
+      <p className="text-slate-400 text-xs sm:text-sm hidden sm:block mt-1">
+        Your AI-powered career growth workspace.
+      </p>
+
+
+    </div>
+
+  </div>
+
+
+
+  {/* Right Section */}
+  <div className="flex items-center gap-3">
+
+
+    {/* Notification */}
+    <button
+      className="relative p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white transition"
+    >
+
+      <Bell size={18}/>
+
+      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-cyan-400 ring-2 ring-slate-950"/>
+
+    </button>
+
+
+
+    {/* Divider */}
+    <div className="h-8 w-px bg-slate-800 hidden sm:block"/>
+
+
+
+    {/* Profile */}
+    <div className="flex items-center gap-3">
+
+
+      {/* Name */}
+      <div className="hidden sm:block text-right">
+
+        <p className="text-sm font-semibold text-white">
+          {user?.data?.name || "User"}
+        </p>
+
+        <p className="text-xs text-slate-400">
+          AI Career Member
+        </p>
+
+      </div>
+
+
+
+      {/* Profile Image */}
+      <div className="
+        h-10 w-10 sm:h-11 sm:w-11 
+        rounded-full 
+        overflow-hidden
+        border border-cyan-400/40
+        bg-gradient-to-tr from-violet-600 to-cyan-400
+        p-[2px]
+      ">
+
+
+        <div className="
+          h-full w-full 
+          rounded-full 
+          overflow-hidden 
+          bg-slate-950
+        ">
+
+
+          {
+            user?.data?.profileImage 
+            ?
+
+            <img
+              src={user.data.profileImage}
+              alt="profile"
+              className="h-full w-full object-cover"
+            />
+
+            :
+
+            <div className="h-full w-full flex items-center justify-center">
+              <User 
+                size={20}
+                className="text-slate-300"
+              />
             </div>
-          </div>
 
-          {/* Action Tools */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <button 
-              className="relative p-2 sm:p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition shadow-sm active:scale-95"
-              aria-label="Notifications"
-            >
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-cyan-400 ring-2 ring-slate-950" />
-            </button>
+          }
 
-            <div className="h-5 w-[1px] bg-slate-800 hidden sm:block" />
 
-            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-400 p-[1px] shadow-md shadow-violet-500/10 shrink-0">
-              <div className="h-full w-full bg-slate-950 rounded-[11px] flex items-center justify-center text-slate-200">
-                <User size={17} />
-              </div>
-            </div>
-          </div>
-        </header>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+</header>
 
         {/* Main Workspace Area */}
         <main className="p-4 sm:p-6 lg:p-8 flex-1">
