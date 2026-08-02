@@ -66,12 +66,13 @@ async function getInterviewReportById(req, res) {
 
 // Get all interviews
 async function getAllInterview(req, res) {
-  const interviewReport = await interviewReportModel.find({
-    user: req.user.id,
-  })
+  const interviewReport = await interviewReportModel
+    .find({
+      user: req.user.id,
+    })
     .sort({ createdAt: -1 })
     .select(
-      "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps"
+      "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps",
     );
 
   res.status(200).json({
@@ -80,8 +81,4 @@ async function getAllInterview(req, res) {
   });
 }
 
-export {
-  GenerateInterview,
-  getInterviewReportById,
-  getAllInterview,
-};
+export { GenerateInterview, getInterviewReportById, getAllInterview };
