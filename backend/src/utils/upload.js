@@ -1,12 +1,26 @@
 import cloudinary from "../config/cloudinarry.js";
-import upload from "../middleware/profileupload.js";
-export const uploadImage=async(filepath,folder)=>{
-    try {
-       return await cloudinary.uploader.upload(filepath,{
-            folder:folder
-        })
-    } catch (error) {
-        console.log(error)
+
+
+export const uploadImage = async(filepath,folder)=>{
+
+    try{
+
+        const result = await cloudinary.uploader.upload(
+            filepath,
+            {
+                folder
+            }
+        );
+
+        return result;
+
+
+    }catch(error){
+
+        console.log("Cloudinary Error:",error);
+
         throw error;
+
     }
+
 }

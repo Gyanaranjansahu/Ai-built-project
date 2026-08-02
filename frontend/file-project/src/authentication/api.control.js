@@ -27,27 +27,47 @@ const handleError = (error) => {
 // =========================
 // SIGNUP
 // =========================
-export async function signup({ email, name, password ,profileImage}) {
-  try {
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("name", name);
-    formData.append("password", password);
-    formData.append("profileImage", profileImage);
-    const { data } = await api.post("/api/auth/register", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+export async function signup({
+ email,
+ name,
+ password,
+ profileImage
+}){
 
-    toast.success(data?.message);
+try{
 
-    return data;
-  } catch (error) {
-    handleError(error);
-  }
+ const formData=new FormData();
+
+
+ formData.append("email",email);
+ formData.append("name",name);
+ formData.append("password",password);
+
+
+ if(profileImage){
+    formData.append(
+      "profileImage",
+      profileImage
+    );
+ }
+
+
+ const {data}=await api.post(
+    "/api/auth/register",
+    formData
+ );
+
+
+ return data;
+
+
+}catch(error){
+
+ handleError(error);
+
 }
 
+}
 // =========================
 // LOGIN
 // =========================

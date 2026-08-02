@@ -27,8 +27,8 @@ export default async function add(req, res) {
     
     // 3. Hash password
     const hashpass = await bcrypt.hash(password, 10);
-    
-const path=file.path;
+    const file=req.file;
+
 
 if (!file) {
   return res.status(400).json({
@@ -36,7 +36,7 @@ if (!file) {
     message: "Profile image is required",
   });
 }
-const file=req.file;
+const path=file.path;
 const imageUrl = await uploadImage(path, "profile_images");
     // 4. Create user in database
     const user = await connect.create({
