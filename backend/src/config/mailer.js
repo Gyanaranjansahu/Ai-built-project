@@ -8,12 +8,6 @@ const email_transport = nodemailer.createTransport({
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
-  tls: {
-    rejectUnauthorized: false, // ⚠️ SSLv3 mat likhna! Sirf self-signed certificate handle karne ke liye ye rakhein.
-  },
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 15000,
 });
 const sendEmail = async ({ to, subject, text, html }) => {
   try {
