@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, BrainCircuit, Sparkles } from "lucide-react";
+import { Eye, EyeOff, BrainCircuit, Sparkles, Upload, Image as ImageIcon } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
 import useauth from "../authentication/hookcontroll";
@@ -10,11 +10,22 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { loading, handleSignup } = useauth();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
+      setImagePreview(URL.createObjectURL(file));
+      if (error) setError("");
+    }
+  };
 
   const validateForm = () => {
     // Basic presence check
@@ -54,6 +65,7 @@ const Register = () => {
       name,
       email,
       password,
+      profileImage,
     });
 
     const success = typeof res === "object" ? res.success : res;
@@ -112,6 +124,35 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Image Upload Field */}
+            <div>
+              <label className="text-sm text-slate-300 block mb-2">Profile Image</label>
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full border border-white/10 bg-black/20 flex items-center justify-center overflow-hidden shrink-0">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Profile Preview"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <ImageIcon className="text-slate-500" size={24} />
+                  )}
+                </div>
+
+                <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer rounded-xl bg-black/20 border border-white/10 px-4 py-3 text-sm text-slate-300 hover:text-white hover:border-violet-500 transition">
+                  <Upload size={18} />
+                  <span>{profileImage ? profileImage.name : "Choose an image"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+
             <div>
               <label className="text-sm text-slate-300">Name</label>
               <input

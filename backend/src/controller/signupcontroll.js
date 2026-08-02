@@ -1,6 +1,8 @@
 import sendEmail from "../config/mailer.js";
 import connect from "../schema/model.js";
 import bcrypt from "bcrypt";
+import fs from "fs";
+import uploadImage from "../utils/upload.js";
 
 export default async function add(req, res) {
   try {
@@ -22,17 +24,28 @@ export default async function add(req, res) {
         message: "Email is already registered",
       });
     }
-
+    
     // 3. Hash password
     const hashpass = await bcrypt.hash(password, 10);
+    const file=req.file;
+const path=file.path;
 
+if (!file) {
+  return res.status(400).json({
+    success: false,
+    message: "Profile image is required",
+  });
+}
+
+const imageUrl = await uploadImage(path, "profile_images");
     // 4. Create user in database
     const user = await connect.create({
       name,
       email,
       password: hashpass,
+      profileImage: imageUrl.secure_url, // Store the Cloudinary URL
     });
-
+fs.unlinkSync(path); // Delete the local file
     // 5. Send Welcome Email WITH await
     try {
       await sendEmail({

@@ -27,12 +27,17 @@ const handleError = (error) => {
 // =========================
 // SIGNUP
 // =========================
-export async function signup({ email, name, password }) {
+export async function signup({ email, name, password ,profileImage}) {
   try {
-    const { data } = await api.post("/api/auth/register", {
-      email,
-      name,
-      password,
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("name", name);
+    formData.append("password", password);
+    formData.append("profileImage", profileImage);
+    const { data } = await api.post("/api/auth/register", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     toast.success(data?.message);

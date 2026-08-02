@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"]
     }
+    ,
+    profileImage: {
+      type: String,
+      default: "https://res.cloudinary.com/xe0gnpw8/image/upload/v1698234567/default-profile-image.png"
+    }
   },
   {
     timestamps: true // Automatically adds createdAt and updatedAt fields
