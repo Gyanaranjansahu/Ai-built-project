@@ -65,7 +65,7 @@ export default async function add(req, res) {
 
               <!-- Call to Action -->
               <div style="text-align: center; margin: 30px 0;">
-                <a stroke-linecap="round" href="https://ai-built-project-analysis.vercel.app/" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 7px; font-size: 15px; font-weight: bold;">
+                <a stroke-linecap="round" href="https://ai-resume-analyzer-app-five.vercel.app/" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 7px; font-size: 15px; font-weight: bold;">
                   Start Analyzing Your Resume
                 </a>
               </div>
