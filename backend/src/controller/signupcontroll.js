@@ -2,7 +2,7 @@ import sendEmail from "../config/mailer.js";
 import connect from "../schema/model.js";
 import bcrypt from "bcrypt";
 import fs from "fs";
-import uploadImage from "../utils/upload.js";
+import {uploadImage} from "../utils/upload.js";
 
 export default async function add(req, res) {
   try {
