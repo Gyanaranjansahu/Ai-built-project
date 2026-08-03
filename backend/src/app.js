@@ -17,7 +17,7 @@ let app = express();
 
 app.use(
   cors({
-    origin:"https://ai-resume-analyzer-app-five.vercel.app",
+    origin:process.env.FRONT_END,
     credentials: true,
   }),
 );
