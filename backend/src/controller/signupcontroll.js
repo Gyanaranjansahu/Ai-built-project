@@ -46,9 +46,25 @@ const imageUrl = await uploadImage(path, "profile_images");
       profileImage: imageUrl.secure_url, // Store the Cloudinary URL
     });
 fs.unlinkSync(path); // Delete the local file
-    // 5. Send Welcome Email WITH await
-    try {
-      await sendEmail({
+
+    // 5. Return success response FIRST — don't make the user wait on SMTP.
+    // Everything the client needs (user created + saved) is already true at this point.
+    res.status(201).json({
+      success: true,
+      message: "Signup successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+    // 6. Send Welcome Email in the background (fire-and-forget).
+    // This runs AFTER the response has already been sent to the client,
+    // so a slow or blocked SMTP connection can no longer delay signup.
+    // We don't await it, and .catch() ensures a failure here can never
+    // crash the process or throw an unhandled promise rejection.
+    sendEmail({
         to: user.email,
         subject: "Welcome to AI Resume Analyzer 🎉",
         text: `Welcome ${user.name}! Your account has been created successfully.`,
@@ -100,22 +116,9 @@ fs.unlinkSync(path); // Delete the local file
             </div>
           </div>
         `,
-      });
-    } catch (emailError) {
-      // Email failure should NOT break the signup flow, log it gracefully
-      console.error("⚠️ User created, but failed to send welcome email:", emailError);
-      
-    }
-
-    // 6. Return success response
-    return res.status(201).json({
-      success: true,
-      message: "Signup successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+    }).catch((emailError) => {
+      // User already created and already responded to — just log this.
+      console.error("⚠️ User created, but failed to send welcome email:", emailError.message);
     });
 
   } catch (error) {
