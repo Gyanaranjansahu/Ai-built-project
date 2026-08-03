@@ -1,5 +1,7 @@
 import Router from 'express';
 import checkAuth from '../middleware/authmiddleware.js';
+import updateProfile from '../controller/profileupdate.js';
+import deleteProfile from '../controller/profiledelete.js';
 
 const profileRouter = Router();
 
