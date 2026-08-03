@@ -11,6 +11,8 @@ import BehavioralQuestions from "../src/dashboard/BehavioralQuestions.jsx";
 import TechnicalQuestions from "../src/dashboard/TechnicalQuestions.jsx";
 import MatchScore from "../src/dashboard/MatchScore.jsx";
 import PreparationPlan from "../src/dashboard/PreparationPlan.jsx";
+import Profile from "./dashboard/Profile.jsx";
+import UpdateProfile from "./dashboard/Update.jsx";
 
 const Home = lazy(() => import("./components/Home.jsx"));
 const Login = lazy(() => import("./page/login.jsx"));
@@ -58,6 +60,8 @@ export default function App() {
           <Route path="technical/:id"  element={<TechnicalQuestions/>}/>
           <Route path="matchscore/:id"  element={<MatchScore/>}/>
           <Route path="7-day-plan/:id" element={<PreparationPlan/>}/>
+          <Route path="profile/:id" element={<Profile/>}/>
+          <Route path="update-profile/:id" element={<UpdateProfile/>}/>
           </Route>
 
           {/* 404 */}

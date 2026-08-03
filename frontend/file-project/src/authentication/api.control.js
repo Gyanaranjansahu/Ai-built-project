@@ -183,3 +183,33 @@ export async function getAllinterviewReport() {
     handleError(error);
   }
 }
+
+
+export async function updateProfile({ name, email, profileImage ,id}) {
+  try {
+    const formData = new FormData();
+    
+    formData.append("name", name);
+    formData.append("email", email);
+
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
+    
+    const { data } = await api.post(`/api/profile/update/${id}`, formData);
+    toast.success(data?.message);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function deleteProfile(id) {
+  try {
+    const { data } = await api.delete(`/api/profile/delete/${id}`);
+    toast.success(data?.message);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+}

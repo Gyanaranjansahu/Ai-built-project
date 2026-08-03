@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { generateInterview, getAllinterviewReport, getInterviewReportById, login, logout, signup } from "./api.control";
+import { generateInterview, getAllinterviewReport, getInterviewReportById, login, logout, signup,updateProfile,deleteProfile } from "./api.control";
 import { authContext } from "./authcontect";
 
 
@@ -112,6 +112,37 @@ const getReports=async()=>{
   }
 }
 
+const updateUserProfile=async(data ,id)=>{
+  setLoading(true)
+  try {
+    const response=await updateProfile({...data, id})
+    setUser(response.user)
+  } catch (error) {
+    console.log(error);
+    
+  }
+  finally{
+    setLoading(false)
+  }
+}
+
+const deleteUserProfile=async(id)=>{
+  setLoading(true)
+  try {
+    const response=await deleteProfile(id)
+    setUser(null)
+  }
+  catch (error) {
+    console.log(error);
+    
+  }
+  finally{
+    setLoading(false)
+  }
+}
+
+
+
   return {
     user,
     loading,
@@ -119,6 +150,8 @@ const getReports=async()=>{
     handleSignup,
     handleLogout,
     generate,
-    getReportById
+    getReportById,
+    updateUserProfile,
+    deleteUserProfile
   };
 }
