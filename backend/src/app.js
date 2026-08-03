@@ -15,6 +15,7 @@ import Login from "./router/loginroute.js";
 import LogoutRoute from "./router/logoutroute.js";
 import userRoute from "./router/userroute.js";
 import interviewRouter from "./router/interview.js";
+import profileRouter from "./router/profile.js";
 
 const app = express();
 
@@ -51,22 +52,6 @@ app.use("/api/auth", userRoute);
 // Interview Routes
 app.use("/api/interview", interviewRouter);
 
-// 404 Route
-app.use("*", (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error(err);
-
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
-
+app.use("/api/profile", profileRouter);
+app.use("/api/profile", profileUpdateRouter);
 export default app;
