@@ -204,145 +204,57 @@ export default function Dashboard() {
         
         {/* Header Bar */}
      {/* Header Bar */}
-<header className="sticky top-0 z-30 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3">
+<header className="sticky top-0 z-30 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
 
-  {/* Left Section */}
-  <div className="flex items-center gap-3 min-w-0">
-
-    {/* Mobile Menu */}
-    <button
-      onClick={() => setIsMobileOpen(true)}
-      className="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-white/10 text-slate-200 hover:text-white hover:bg-slate-800 transition"
-    >
-      <Menu size={20}/>
-    </button>
-
-
-    <div className="truncate">
-
-      <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-
-        Welcome back,
-
-        <span className="text-cyan-400">
-          {
-            user?.data?.name
-            ? user.data.name.split(" ")[0]
-            : "Developer"
-          }
-        </span>
-
-        <span>
-          👋
-        </span>
-
-      </h1>
-
-
-      <p className="text-slate-400 text-xs sm:text-sm hidden sm:block mt-1">
-        Your AI-powered career growth workspace.
-      </p>
-
-
-    </div>
-
-  </div>
-
-
-
-  {/* Right Section */}
+  {/* Left */}
   <div className="flex items-center gap-3">
 
-
-    {/* Notification */}
     <button
-      className="relative p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white transition"
+      onClick={() => setIsMobileOpen(true)}
+      className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 transition"
     >
-
-      <Bell size={18}/>
-
-      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-cyan-400 ring-2 ring-slate-950"/>
-
+      <Menu size={20} />
     </button>
 
+    <div>
+      <h1 className="text-lg sm:text-xl font-bold text-white">
+        Dashboard
+      </h1>
 
-
-    {/* Divider */}
-    <div className="h-8 w-px bg-slate-800 hidden sm:block"/>
-
-
-
-    {/* Profile */}
-    <div className="flex items-center gap-3">
-
-
-      {/* Name */}
-      <div className="hidden sm:block text-right">
-
-        <p className="text-sm font-semibold text-white">
-          {user?.data?.name || "User"}
-        </p>
-
-        <p className="text-xs text-slate-400">
-          AI Career Member
-        </p>
-
-      </div>
-
-
-
-      {/* Profile Image */}
-      <div className="
-        h-10 w-10 sm:h-11 sm:w-11 
-        rounded-full 
-        overflow-hidden
-        border border-cyan-400/40
-        bg-gradient-to-tr from-violet-600 to-cyan-400
-        p-[2px]
-      ">
-
-
-        <div className="
-          h-full w-full 
-          rounded-full 
-          overflow-hidden 
-          bg-slate-950
-        ">
-
-
-          {
-            user?.data?.profileImage 
-            ?
-
-            <img
-              src={user.data.profileImage}
-              alt="profile"
-              className="h-full w-full object-cover"
-            />
-
-            :
-
-            <div className="h-full w-full flex items-center justify-center">
-              <User 
-                size={20}
-                className="text-slate-300"
-              />
-            </div>
-
-          }
-
-
-        </div>
-
-
-      </div>
-
-
+      <p className="hidden md:block text-xs text-slate-400">
+        AI Resume Analyzer
+      </p>
     </div>
-
 
   </div>
 
+  {/* Right */}
+  <div className="flex items-center gap-4">
+
+    <Link
+      to={`/dashboard/matchscore/${id}`}
+      className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold transition"
+    >
+      Analyze Resume
+    </Link>
+
+    <button className="relative h-11 w-11 rounded-full overflow-hidden border border-slate-700 hover:border-cyan-400 transition">
+
+      {user?.data?.profileImage ? (
+        <img
+          src={user.data.profileImage}
+          alt="Profile"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="h-full w-full flex items-center justify-center bg-slate-900">
+          <User size={18} className="text-slate-300" />
+        </div>
+      )}
+
+    </button>
+
+  </div>
 
 </header>
 

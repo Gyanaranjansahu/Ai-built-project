@@ -25,3 +25,6 @@ dist-ssr
 .env .gitignore
 .env
 node_modules/
+.env
+.env.*
+!.env.example
