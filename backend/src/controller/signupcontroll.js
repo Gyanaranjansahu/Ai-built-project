@@ -47,18 +47,7 @@ const imageUrl = await uploadImage(path, "profile_images");
     });
 fs.unlinkSync(path); // Delete the local file
     // 5. Send Welcome Email WITH await
-    // 6. Return success response
-    return res.status(201).json({
-      success: true,
-      message: "Signup successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-    });
-
-        try {
+    try {
       await sendEmail({
         to: user.email,
         subject: "Welcome to AI Resume Analyzer 🎉",
@@ -114,8 +103,20 @@ fs.unlinkSync(path); // Delete the local file
       });
     } catch (emailError) {
       // Email failure should NOT break the signup flow, log it gracefully
-      console.error("⚠️ User created, but failed to send welcome email:", emailError.message);
+      console.error("⚠️ User created, but failed to send welcome email:", emailError);
+      
     }
+
+    // 6. Return success response
+    return res.status(201).json({
+      success: true,
+      message: "Signup successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
 
   } catch (error) {
     console.error("❌ Signup Error:", error);
