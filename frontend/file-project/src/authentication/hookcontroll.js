@@ -112,10 +112,10 @@ const getReports=async()=>{
   }
 }
 
-const updateUserProfile=async(data ,id)=>{
+const updateUserProfile=async(data)=>{
   setLoading(true)
   try {
-    const response=await updateProfile({...data, id})
+    const response=await updateProfile(data)
     setUser(response.user)
   } catch (error) {
     console.log(error);
@@ -126,10 +126,10 @@ const updateUserProfile=async(data ,id)=>{
   }
 }
 
-const deleteUserProfile=async(id)=>{
+const deleteUserProfile=async()=>{
   setLoading(true)
   try {
-    const response=await deleteProfile(id)
+    const response=await deleteProfile()
     setUser(null)
   }
   catch (error) {

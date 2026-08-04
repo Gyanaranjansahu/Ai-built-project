@@ -18,16 +18,12 @@ import interviewRouter from "./router/interview.js";
 import profileRouter from "./router/profile.js";
 
 const app = express();
-
-// Connect Database
-connectDB();
-
 // Middlewares
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONT_END,
+    origin: ["http://localhost:5173", process.env.FRONT_END],
     credentials: true,
   })
 );

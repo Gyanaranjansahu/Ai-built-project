@@ -31,7 +31,7 @@ export function Authprovider({ children }) {
     }
   };
 
-
+console.log("User state in Authprovider:", user);
   const getReport = async(id)=>{
 
     try {

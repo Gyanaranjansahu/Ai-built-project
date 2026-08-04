@@ -2,7 +2,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL:"https://ai-build-project-backend.onrender.com",
+  baseURL:"http://localhost:4000",
+  // https://ai-build-project-backend.onrender.com
+
   withCredentials: true,
 });
 
@@ -185,7 +187,7 @@ export async function getAllinterviewReport() {
 }
 
 
-export async function updateProfile({ name, email, profileImage ,id}) {
+export async function updateProfile({ name, email, profileImage }) {
   try {
     const formData = new FormData();
     
@@ -196,7 +198,7 @@ export async function updateProfile({ name, email, profileImage ,id}) {
       formData.append("profileImage", profileImage);
     }
     
-    const { data } = await api.post(`/api/profile/update/${id}`, formData);
+    const { data } = await api.put(`/api/profile/update/`, formData);
     toast.success(data?.message);
     return data;
   } catch (error) {
@@ -204,9 +206,9 @@ export async function updateProfile({ name, email, profileImage ,id}) {
   }
 }
 
-export async function deleteProfile(id) {
+export async function deleteProfile() {
   try {
-    const { data } = await api.delete(`/api/profile/delete/${id}`);
+    const { data } = await api.delete(`/api/profile/delete`);
     toast.success(data?.message);
     return data;
   } catch (error) {

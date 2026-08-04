@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, Link, useLocation, Outlet, useParams } from "react-router-dom";
+import { authContext } from "../authentication/authcontect.jsx";
 import {
   BarChart3,
   Code2,
@@ -10,19 +11,22 @@ import {
   X,
   Sparkles,
   User,
-  Bell,
   CalendarDays,
   ArrowRight,
   TrendingUp,
   Target,
   FileCheck2,
-  Zap
+  Zap,
+  Search,
+  ChevronRight,
+  ShieldCheck,
+  Smile
 } from "lucide-react";
 import useAuth from "../authentication/hookcontroll";
 
 export default function Dashboard() {
   const { userId } = useParams();
-
+  const { loading } = useContext(authContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -41,7 +45,7 @@ export default function Dashboard() {
     { name: "ATS Score", icon: BarChart3, path: `/dashboard/matchscore/${id}` },
     { name: "Technical Question", icon: Code2, path: `/dashboard/technical/${id}` },
     { name: "Behavioral Question", icon: HeartHandshake, path: `/dashboard/behavioral/${id}` },
-    { name: "Profile", icon: User, path: `/dashboard/profile/${id}` }
+    { name: "Profile", icon: User, path: `/dashboard/profile` }
   ];
 
   const quickTools = [
@@ -87,9 +91,11 @@ export default function Dashboard() {
 
   const isIndexPage = location.pathname === "/dashboard" || location.pathname === "/dashboard/";
 
+  // Extract displaying user name or email fallback
+  const userName = user?.data?.name || user?.data?.username || "User";
+
   return (
     <div className="min-h-screen lg:h-screen bg-[#030712] text-slate-100 flex flex-col lg:flex-row relative overflow-x-hidden font-sans selection:bg-cyan-500/30">
-      
       {/* Background Ambient Glows */}
       <div className="absolute top-[-5%] left-[-10%] h-[250px] w-[250px] sm:h-[400px] sm:w-[400px] lg:h-[500px] lg:w-[500px] bg-violet-600/15 blur-[90px] sm:blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-5%] right-[-10%] h-[250px] w-[250px] sm:h-[400px] sm:w-[400px] lg:h-[500px] lg:w-[500px] bg-cyan-500/15 blur-[90px] sm:blur-[120px] rounded-full pointer-events-none" />
@@ -201,54 +207,97 @@ export default function Dashboard() {
       <div className="flex-1 min-w-0 flex flex-col h-full overflow-y-auto">
         
         {/* Header Bar */}
-        <header className="sticky top-0 z-30 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <header className="sticky top-0 z-30 h-20 border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-2xl px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all">
 
-          {/* Left */}
-          <div className="flex items-center gap-3">
+          {/* Left Section */}
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setIsMobileOpen(true)}
-              className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 transition"
+              className="lg:hidden p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800/80 transition active:scale-95 shadow-sm"
+              aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
 
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-white">
-                Dashboard
-              </h1>
-              <p className="hidden md:block text-xs text-slate-400">
-                AI Resume Analyzer
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                  Dashboard
+                </h1>
+                <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 font-medium hidden sm:block">
+                AI Resume Analyzer & Preparation Suite
               </p>
             </div>
           </div>
 
-          {/* Right */}
-          <div className="flex items-center gap-4">
+          {/* Middle Section: Search Bar */}
+          <div className="hidden md:flex items-center relative max-w-xs w-full">
+            <Search size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search tools, plans..."
+              className="w-full bg-slate-900/60 border border-slate-800 text-xs text-slate-200 placeholder-slate-500 rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+            />
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            
+            {/* Analyze CTA */}
             <Link
               to={`/dashboard/matchscore/${id}`}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold transition"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-semibold shadow-lg shadow-cyan-500/15 border border-cyan-400/20 transition-all duration-200 active:scale-95"
             >
-              Analyze Resume
+              <Zap size={14} className="fill-current text-white" />
+              <span>Analyze Resume</span>
             </Link>
 
-            {/* Avatar Link to Profile Page */}
+            {/* Welcome Greeting Pill (Replaces Notifications) */}
+            <div className="hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+              <Smile size={15} className="text-cyan-400" />
+              <span className="text-slate-400">Welcome,</span>
+              <span className="font-semibold text-slate-100">{userName}</span>
+            </div>
+
+            <div className="h-6 w-[1px] bg-slate-800/80 hidden sm:block" />
+
+            {/* Profile Navigation Button (Navigates to /dashboard/profile directly) */}
             <Link
-              to={`/dashboard/profile/${id}`}
-              className="relative h-11 w-11 rounded-full overflow-hidden border border-slate-700 hover:border-cyan-400 transition block shrink-0"
+              to="/dashboard/profile"
+              className="group flex items-center gap-3 p-1.5 sm:pr-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-200"
               title="View Profile"
             >
-              {user?.data?.profileImage ? (
-                <img
-                  src={user.data.profileImage}
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center bg-slate-900">
-                  <User size={18} className="text-slate-300" />
+              <div className="relative">
+                <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl overflow-hidden border border-slate-700/80 group-hover:border-cyan-400/60 transition-colors shrink-0">
+                  {user?.data?.profileImage ? (
+                    <img
+                      src={user.data.profileImage}
+                      alt="Profile"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-violet-600/30 to-cyan-600/30 text-cyan-300">
+                      <User size={18} />
+                    </div>
+                  )}
                 </div>
-              )}
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-slate-950" />
+              </div>
+
+              <div className="hidden sm:flex flex-col text-left">
+                <span className="text-xs font-bold text-slate-200 group-hover:text-cyan-300 transition-colors line-clamp-1 max-w-[110px]">
+                  {userName}
+                </span>
+                <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
+                  View Profile <ChevronRight size={10} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </div>
             </Link>
+
           </div>
 
         </header>
