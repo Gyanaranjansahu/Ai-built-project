@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONT_END,
+    origin:process.env.FRONT_END,
     credentials: true,
   })
 );
@@ -49,5 +49,4 @@ app.use("/api/auth", userRoute);
 app.use("/api/interview", interviewRouter);
 
 app.use("/api/profile", profileRouter);
-app.use("/api/profile",profileRouter);
 export default app;

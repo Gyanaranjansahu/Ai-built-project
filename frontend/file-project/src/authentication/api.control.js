@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL:" https://ai-build-project-backend.onrender.com",
+  baseURL:"https://ai-build-project-backend.onrender.com",
   // https://ai-build-project-backend.onrender.com
 
   withCredentials: true,
