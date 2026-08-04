@@ -6,9 +6,10 @@ import nodemailer from "nodemailer";
 // Timeouts make it FAIL FAST instead of hanging the request if the
 // deployment host is blocking SMTP ports (common on Render/Vercel free tiers)
 const email_transport = nodemailer.createTransport({
-  service: "gmail",
-   family: 4, 
-   secure: true, // use TLS
+    host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  family: 4, //// use TLS
 
   auth: {
     user: process.env.EMAIL,
