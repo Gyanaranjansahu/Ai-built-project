@@ -47,24 +47,8 @@ const imageUrl = await uploadImage(path, "profile_images");
     });
 fs.unlinkSync(path); // Delete the local file
 
-    // 5. Return success response FIRST — don't make the user wait on SMTP.
-    // Everything the client needs (user created + saved) is already true at this point.
-    res.status(201).json({
-      success: true,
-      message: "Signup successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-    });
 
-    // 6. Send Welcome Email in the background (fire-and-forget).
-    // This runs AFTER the response has already been sent to the client,
-    // so a slow or blocked SMTP connection can no longer delay signup.
-    // We don't await it, and .catch() ensures a failure here can never
-    // crash the process or throw an unhandled promise rejection.
-    sendEmail({
+ await sendEmail({
         to: user.email,
         subject: "Welcome to AI Resume Analyzer 🎉",
         text: `Welcome ${user.name}! Your account has been created successfully.`,
@@ -121,6 +105,25 @@ fs.unlinkSync(path); // Delete the local file
       console.error("⚠️ User created, but failed to send welcome email:", emailError.message);
     });
 
+
+    // 5. Return success response FIRST — don't make the user wait on SMTP.
+    // Everything the client needs (user created + saved) is already true at this point.
+    res.status(201).json({
+      success: true,
+      message: "Signup successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+    // 6. Send Welcome Email in the background (fire-and-forget).
+    // This runs AFTER the response has already been sent to the client,
+    // so a slow or blocked SMTP connection can no longer delay signup.
+    // We don't await it, and .catch() ensures a failure here can never
+    // crash the process or throw an unhandled promise rejection.
+  
   } catch (error) {
     console.error("❌ Signup Error:", error);
 
