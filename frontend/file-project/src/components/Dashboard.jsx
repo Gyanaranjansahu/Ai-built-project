@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation, Outlet, useParams } from "react-router-dom";
-import { useEffect } from "react";
 import {
   BarChart3,
   Code2,
@@ -21,7 +20,6 @@ import {
 } from "lucide-react";
 import useAuth from "../authentication/hookcontroll";
 
-
 export default function Dashboard() {
   const { userId } = useParams();
 
@@ -36,7 +34,6 @@ export default function Dashboard() {
   };
 
   let id = user?.data?._id;
-  console.log(id);
 
   const navLinks = [
     { name: "Dashboard", icon: LayoutDashboard, path: `/dashboard` },
@@ -44,7 +41,7 @@ export default function Dashboard() {
     { name: "ATS Score", icon: BarChart3, path: `/dashboard/matchscore/${id}` },
     { name: "Technical Question", icon: Code2, path: `/dashboard/technical/${id}` },
     { name: "Behavioral Question", icon: HeartHandshake, path: `/dashboard/behavioral/${id}` },
-    { name: "Profile", icon: User, path: `/dashboard/profile/${id}`}
+    { name: "Profile", icon: User, path: `/dashboard/profile/${id}` }
   ];
 
   const quickTools = [
@@ -204,60 +201,57 @@ export default function Dashboard() {
       <div className="flex-1 min-w-0 flex flex-col h-full overflow-y-auto">
         
         {/* Header Bar */}
-     {/* Header Bar */}
-<header className="sticky top-0 z-30 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <header className="sticky top-0 z-30 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
 
-  {/* Left */}
-  <div className="flex items-center gap-3">
+          {/* Left */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileOpen(true)}
+              className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 transition"
+            >
+              <Menu size={20} />
+            </button>
 
-    <button
-      onClick={() => setIsMobileOpen(true)}
-      className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 transition"
-    >
-      <Menu size={20} />
-    </button>
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-white">
+                Dashboard
+              </h1>
+              <p className="hidden md:block text-xs text-slate-400">
+                AI Resume Analyzer
+              </p>
+            </div>
+          </div>
 
-    <div>
-      <h1 className="text-lg sm:text-xl font-bold text-white">
-        Dashboard
-      </h1>
+          {/* Right */}
+          <div className="flex items-center gap-4">
+            <Link
+              to={`/dashboard/matchscore/${id}`}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold transition"
+            >
+              Analyze Resume
+            </Link>
 
-      <p className="hidden md:block text-xs text-slate-400">
-        AI Resume Analyzer
-      </p>
-    </div>
+            {/* Avatar Link to Profile Page */}
+            <Link
+              to={`/dashboard/profile/${id}`}
+              className="relative h-11 w-11 rounded-full overflow-hidden border border-slate-700 hover:border-cyan-400 transition block shrink-0"
+              title="View Profile"
+            >
+              {user?.data?.profileImage ? (
+                <img
+                  src={user.data.profileImage}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center bg-slate-900">
+                  <User size={18} className="text-slate-300" />
+                </div>
+              )}
+            </Link>
+          </div>
 
-  </div>
-
-  {/* Right */}
-  <div className="flex items-center gap-4">
-
-    <Link
-      to={`/dashboard/matchscore/${id}`}
-      className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold transition"
-    >
-      Analyze Resume
-    </Link>
-
-    <button className="relative h-11 w-11 rounded-full overflow-hidden border border-slate-700 hover:border-cyan-400 transition">
-
-      {user?.data?.profileImage ? (
-        <img
-          src={user.data.profileImage}
-          alt="Profile"
-          className="h-full w-full object-cover"
-        />
-      ) : (
-        <div className="h-full w-full flex items-center justify-center bg-slate-900">
-          <User size={18} className="text-slate-300" />
-        </div>
-      )}
-
-    </button>
-
-  </div>
-
-</header>
+        </header>
 
         {/* Main Workspace Area */}
         <main className="p-4 sm:p-6 lg:p-8 flex-1">
