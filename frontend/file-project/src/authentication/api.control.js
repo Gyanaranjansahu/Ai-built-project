@@ -2,18 +2,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL:"https://ai-build-project-backend.onrender.com",
-  // https://ai-build-project-backend.onrender.com
-
+  baseURL: "https://ai-build-project-backend.onrender.com",
   withCredentials: true,
 });
 
+// =========================
 // Common Error Handler
+// =========================
 const handleError = (error) => {
-  console.error(
-    "API Error:",
-    error.response?.data || error.message
-  );
+  console.error("API Error:", error.response?.data || error.message);
 
   const message =
     error.response?.data?.message ||
@@ -30,46 +27,35 @@ const handleError = (error) => {
 // SIGNUP
 // =========================
 export async function signup({
- email,
- name,
- password,
- profileImage
-}){
+  email,
+  name,
+  password,
+  profileImage,
+}) {
+  try {
+    const formData = new FormData();
 
-try{
+    formData.append("email", email);
+    formData.append("name", name);
+    formData.append("password", password);
 
- const formData=new FormData();
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
 
-
- formData.append("email",email);
- formData.append("name",name);
- formData.append("password",password);
-
-
- if(profileImage){
-    formData.append(
-      "profileImage",
-      profileImage
+    const { data } = await api.post(
+      "/api/auth/register",
+      formData
     );
- }
 
+    toast.success(data?.message || "Registration successful");
 
- const {data}=await api.post(
-    "/api/auth/register",
-    formData
- );
-
-
- return data;
-
-
-}catch(error){
-
- handleError(error);
-
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
 }
 
-}
 // =========================
 // LOGIN
 // =========================
@@ -80,7 +66,7 @@ export async function login({ email, password }) {
       password,
     });
 
-    toast.success(data?.message);
+    toast.success(data?.message || "Login successful");
 
     return data;
   } catch (error) {
@@ -95,7 +81,7 @@ export async function logout() {
   try {
     const { data } = await api.get("/api/auth/logout");
 
-    toast.success(data?.message);
+    toast.success(data?.message || "Logged out");
 
     return data;
   } catch (error) {
@@ -109,14 +95,18 @@ export async function logout() {
 export async function userMe() {
   try {
     const { data } = await api.get("/api/auth/user");
-
     return data;
   } catch (error) {
-    if (error?.response?.status === 401) {
+    // Ignore these errors when app loads
+    if (
+      error.response?.status === 401 ||
+      error.response?.status === 404
+    ) {
       return null;
     }
 
-    handleError(error);
+    console.error(error.response?.data || error.message);
+    throw error;
   }
 }
 
@@ -135,16 +125,13 @@ export async function generateInterview({
     formData.append("selfDescription", selfDescription);
     formData.append("jobDescription", jobDescription);
 
-    // console.log("Resume:", resume);
-    // console.log("Self Description:", selfDescription);
-    // console.log("Job Description:", jobDescription);
-
     const { data } = await api.post(
       "/api/interview/generate",
       formData
     );
 
     toast.success(data?.message);
+
     return data;
   } catch (error) {
     handleError(error);
@@ -155,8 +142,6 @@ export async function generateInterview({
 // GET REPORT BY ID
 // =========================
 export async function getInterviewReportById(interviewId) {
-  console.log(interviewId);
-  
   try {
     if (!interviewId) {
       throw new Error("Interview ID is required");
@@ -165,7 +150,6 @@ export async function getInterviewReportById(interviewId) {
     const { data } = await api.get(
       `/api/interview/report/${interviewId}`
     );
-
 
     return data;
   } catch (error) {
@@ -186,30 +170,48 @@ export async function getAllinterviewReport() {
   }
 }
 
-
-export async function updateProfile({ name, email, profileImage }) {
+// =========================
+// UPDATE PROFILE
+// =========================
+export async function updateProfile({
+  name,
+  email,
+  profileImage,
+}) {
   try {
     const formData = new FormData();
-    
+
     formData.append("name", name);
     formData.append("email", email);
 
     if (profileImage) {
       formData.append("profileImage", profileImage);
     }
-    
-    const { data } = await api.put(`/api/profile/update/`, formData);
+
+    const { data } = await api.put(
+      "/api/profile/update",
+      formData
+    );
+
     toast.success(data?.message);
+
     return data;
   } catch (error) {
     handleError(error);
   }
 }
 
+// =========================
+// DELETE PROFILE
+// =========================
 export async function deleteProfile() {
   try {
-    const { data } = await api.delete(`/api/profile/delete`);
+    const { data } = await api.delete(
+      "/api/profile/delete"
+    );
+
     toast.success(data?.message);
+
     return data;
   } catch (error) {
     handleError(error);

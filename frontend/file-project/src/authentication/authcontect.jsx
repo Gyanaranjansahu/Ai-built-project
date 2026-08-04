@@ -10,53 +10,52 @@ export function Authprovider({ children }) {
   const [report, setReport] = useState(null);
   const [reports, setReports] = useState([]);
 
-
+  // ==========================
+  // Refresh Logged-in User
+  // ==========================
   const refreshUser = async () => {
-    try {
+    setAuthLoading(true);
 
+    try {
       const data = await userMe();
 
-      if(data){
+      if (data) {
         setUser(data);
-      }else{
+      } else {
         setUser(null);
       }
-
     } catch (error) {
-      console.log("Auth Check Error:", error.message);
-      setUser(null);
+      // Do not show toast here
+      console.error(
+        "Auth Check:",
+        error.response?.data?.message || error.message
+      );
 
+      setUser(null);
     } finally {
       setAuthLoading(false);
     }
   };
 
-console.log("User state in Authprovider:", user);
-  const getReport = async(id)=>{
-
+  // ==========================
+  // Get Interview Report
+  // ==========================
+  const getReport = async (id) => {
     try {
-
       const data = await getInterviewReportById(id);
 
       setReport(data);
 
       return data;
-
-    } catch(error){
-
-      console.log(error);
+    } catch (error) {
+      console.error(error);
       throw error;
-
     }
-  }
+  };
 
-
-  useEffect(()=>{
-
+  useEffect(() => {
     refreshUser();
-
-  },[]);
-
+  }, []);
 
   return (
     <authContext.Provider
@@ -72,12 +71,10 @@ console.log("User state in Authprovider:", user);
         reports,
         setReports,
 
-        getReport
+        getReport,
       }}
     >
-
       {children}
-
     </authContext.Provider>
   );
 }

@@ -1,23 +1,35 @@
 import connect from "../schema/model.js";
+
 async function userController(req, res) {
   try {
-    let data = await connect.findById(req.user.id).select("-password");
-    console.log(data);
+    // If req.user doesn't exist, user is not logged in
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
 
-    if (!data) {
-      return res.status(400).json({
-        text: "user not found",
+    const user = await connect
+      .findById(req.user.id)
+      .select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Unauthorized",
       });
     }
 
     return res.status(200).json({
-      text: "user find",
-      data,
+      message: "User fetched successfully",
+      data: user,
     });
   } catch (error) {
-    return res.status(404).json({
-      text: "user not found",
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
 }
+
 export default userController;
