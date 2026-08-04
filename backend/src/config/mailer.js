@@ -10,7 +10,7 @@ const sendEmail = async ({ to, subject, text, html }) => {
 
   try {
     const result = await email_transport.emails.send({
-      from: `"Your App Name" <${process.env.EMAIL}>`,
+      from:  'onboarding@resend.dev',
       to,
       subject,
       text,
