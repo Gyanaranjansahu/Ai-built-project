@@ -7,6 +7,9 @@ import nodemailer from "nodemailer";
 // deployment host is blocking SMTP ports (common on Render/Vercel free tiers)
 const email_transport = nodemailer.createTransport({
   service: "gmail",
+   family: 4, 
+   secure: true, // use TLS
+
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD, // must be a Gmail App Password, not your login password

@@ -44,7 +44,7 @@ export default function Dashboard() {
     { name: "ATS Score", icon: BarChart3, path: `/dashboard/matchscore/${id}` },
     { name: "Technical Question", icon: Code2, path: `/dashboard/technical/${id}` },
     { name: "Behavioral Question", icon: HeartHandshake, path: `/dashboard/behavioral/${id}` },
-    { name: "Profile", icon: User, path: `/dashboard/profile/${id}` }
+    { name: "Profile", icon: User, path: `/dashboard/profile/${id}`}
   ];
 
   const quickTools = [
