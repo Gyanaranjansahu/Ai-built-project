@@ -26,7 +26,7 @@ const sendEmail = async ({ to, subject, text, html }) => {
   try {
     // Verify SMTP connection config
     await email_transport.verify();
-console.log("📡 Attempting to send email to:", user.email); /
+console.log("📡 Attempting to send email to:", user.email); 
     const result = await email_transport.sendMail({
       from: `"AI Resume Analyzer" <${process.env.SENDER_EMAIL || process.env.SMTP_USER}>`,
       to,
