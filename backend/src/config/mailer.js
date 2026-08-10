@@ -1,49 +1,43 @@
 import nodemailer from "nodemailer";
 
 const sendEmail = async ({ to, subject, text, html }) => {
-  if (!process.env.EMAIL || !process.env.PASSWORD) {
-    console.error("❌ EMAIL or PASSWORD is missing from environment variables.");
+  // Checks if Brevo SMTP variables exist in Render
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.error("❌ SMTP_USER or SMTP_PASS missing in environment variables!");
     return;
   }
 
-  // Create transporter inside the call without pooling
-  // This prevents hanging sockets on cloud hosting providers like Render
-  const email_transport = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+  // Uses Brevo SMTP relay (Allowed on Render, no port blocks)
+  const transporter = nodemailer.createTransport({
+    host: "smtp-relay.brevo.com",
     port: 587,
     secure: false, // TLS
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD, // 16-character App Password (no spaces)
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS, // Brevo SMTP Key (xsmtpsib-...)
     },
-    tls: {
-      rejectUnauthorized: false, // Prevents certificate verification timeouts on Render
-    },
-    connectionTimeout: 15000, // Give Render enough room for DNS + handshake
+    connectionTimeout: 15000,
     greetingTimeout: 10000,
     socketTimeout: 15000,
   });
 
   try {
-    const result = await email_transport.sendMail({
-      from: `"AI Resume Analyzer" <${process.env.EMAIL}>`,
+    console.log(`📡 Sending email via Brevo Nodemailer to ${to}...`);
+
+    const info = await transporter.sendMail({
+      from: `"AI Resume Analyzer" <${process.env.SENDER_EMAIL || process.env.SMTP_USER}>`,
       to,
       subject,
       text,
-      html,
+      html: html || `<p>${text}</p>`,
     });
 
     console.log("✅ Email sent successfully to:", to);
-    console.log("Message ID:", result.messageId);
+    console.log("Message ID:", info.messageId);
 
-    return result;
+    return info;
   } catch (error) {
-    console.error("❌ Email Error:", error.message);
-    if (error.code === "EAUTH") {
-      console.error("👉 Check your App Password or Google Security alerts.");
-    } else if (error.code === "ETIMEDOUT" || error.code === "ESOCKET") {
-      console.error("👉 Render firewall is blocking outbound SMTP ports (465/587). Consider switching to HTTP API like Resend.");
-    }
+    console.error("❌ Nodemailer Email Error:", error.message);
   }
 };
 
