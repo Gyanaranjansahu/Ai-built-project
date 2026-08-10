@@ -1,43 +1,49 @@
 import nodemailer from "nodemailer";
 
+// Initialize transport using explicit Brevo SMTP config rather than Gmail
+// Render blocks outbound Gmail SMTP ports (465/587)
+const email_transport = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false, // TLS
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS, // Brevo SMTP Key (xsmtpsib-...)
+  },
+  pool: true, // Reuse connections rather than creating a new one per email
+  maxConnections: 3,
+  connectionTimeout: 10000, // 10s connection timeout for cloud platforms
+  greetingTimeout: 5000,
+  socketTimeout: 10000,
+});
+
 const sendEmail = async ({ to, subject, text, html }) => {
-  // Checks if Brevo SMTP variables exist in Render
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.error("❌ SMTP_USER or SMTP_PASS missing in environment variables!");
+    console.error("❌ SMTP_USER or SMTP_PASS is missing from environment variables.");
     return;
   }
 
-  // Uses Brevo SMTP relay (Allowed on Render, no port blocks)
-  const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    secure: false, // TLS
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS, // Brevo SMTP Key (xsmtpsib-...)
-    },
-    connectionTimeout: 15000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-  });
-
   try {
-    console.log(`📡 Sending email via Brevo Nodemailer to ${to}...`);
-
-    const info = await transporter.sendMail({
+    // Verify SMTP connection config
+    await email_transport.verify();
+console.log("📡 Attempting to send email to:", user.email); /
+    const result = await email_transport.sendMail({
       from: `"AI Resume Analyzer" <${process.env.SENDER_EMAIL || process.env.SMTP_USER}>`,
       to,
       subject,
       text,
-      html: html || `<p>${text}</p>`,
+      html,
     });
 
     console.log("✅ Email sent successfully to:", to);
-    console.log("Message ID:", info.messageId);
+    console.log("Message ID:", result.messageId);
 
-    return info;
+    return result;
   } catch (error) {
-    console.error("❌ Nodemailer Email Error:", error.message);
+    console.error("❌ Email Error:", error.message);
+    if (error.code === "EAUTH") {
+      console.error("👉 Check if your Brevo SMTP key is correct.");
+    }
   }
 };
 
