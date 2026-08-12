@@ -32,71 +32,125 @@ const steps = [
   },
 ];
 
+// deterministic pseudo-random so particles don't jump between renders
+const particles = Array.from({ length: 22 }, (_, i) => {
+  const seed = (n) => ((Math.sin(i * 99.7 + n) + 1) / 2);
+  return {
+    left: seed(1) * 100,
+    top: seed(2) * 100,
+    size: 2 + seed(3) * 4,
+    delay: seed(4) * -20,
+    duration: 12 + seed(5) * 16,
+    violet: seed(6) > 0.5,
+  };
+});
+
+function AnimatedBackground() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* aurora mesh */}
+      <div
+        className="ab-anim absolute -inset-[20%] opacity-60"
+        style={{
+          background:
+            "radial-gradient(40% 40% at 20% 30%, rgba(139,92,246,0.35), transparent 60%), radial-gradient(35% 35% at 80% 20%, rgba(34,211,238,0.28), transparent 60%), radial-gradient(45% 45% at 60% 80%, rgba(217,70,239,0.22), transparent 60%)",
+          filter: "blur(40px)",
+          animation: "auroraShift 20s ease-in-out infinite",
+        }}
+      />
+
+      {/* panning grid */}
+      <div
+        className="ab-anim absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
+          backgroundSize: "56px 56px",
+          animation: "gridPan 8s linear infinite",
+          maskImage:
+            "radial-gradient(ellipse 90% 70% at 50% 20%,#000 40%,transparent 100%)",
+        }}
+      />
+
+      {/* sweeping beams */}
+      <div
+        className="ab-anim absolute left-1/2 top-0 h-[120vh] w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-violet-400/40 to-transparent"
+        style={{ animation: "beamSweep 14s ease-in-out infinite" }}
+      />
+      <div
+        className="ab-anim absolute left-1/3 top-0 h-[120vh] w-px bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent"
+        style={{ animation: "beamSweep 18s ease-in-out infinite reverse" }}
+      />
+
+      {/* floating particles */}
+      {particles.map((p, i) => (
+        <span
+          key={i}
+          className="ab-anim absolute rounded-full"
+          style={{
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            background: p.violet
+              ? "rgba(167,139,250,0.8)"
+              : "rgba(34,211,238,0.8)",
+            boxShadow: p.violet
+              ? "0 0 10px 2px rgba(167,139,250,0.5)"
+              : "0 0 10px 2px rgba(34,211,238,0.5)",
+            animation: `floatParticle ${p.duration}s ease-in-out ${p.delay}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <>
-      {/* Local animation styles — no libraries required */}
       <style>{`
-        @keyframes floatY {
-          0%,100% { transform: translateY(0); }
-          50% { transform: translateY(-14px); }
+        @keyframes auroraShift {
+          0%,100% { transform: translate(0,0) rotate(0deg) scale(1); }
+          33% { transform: translate(4%,-3%) rotate(8deg) scale(1.08); }
+          66% { transform: translate(-3%,4%) rotate(-6deg) scale(1.04); }
         }
-        @keyframes floatYslow {
-          0%,100% { transform: translateY(0); }
-          50% { transform: translateY(-24px); }
+        @keyframes gridPan { to { background-position: 56px 56px; } }
+        @keyframes beamSweep {
+          0%,100% { transform: translateX(-40vw); opacity: 0; }
+          50% { transform: translateX(40vw); opacity: 1; }
         }
-        @keyframes drift {
-          0%,100% { transform: translate(0,0); }
-          50% { transform: translate(30px,-20px); }
+        @keyframes floatParticle {
+          0%,100% { transform: translateY(0) translateX(0); opacity: .35; }
+          25% { opacity: 1; }
+          50% { transform: translateY(-40px) translateX(20px); opacity: .6; }
+          75% { opacity: .9; }
         }
-        @keyframes shimmerText {
-          to { background-position: 200% center; }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes floatY { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-14px);} }
+        @keyframes floatYslow { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-24px);} }
+        @keyframes drift { 0%,100% { transform: translate(0,0);} 50% { transform: translate(30px,-20px);} }
+        @keyframes shimmerText { to { background-position: 200% center; } }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(28px);} to { opacity:1; transform: translateY(0);} }
         @keyframes pulseRing {
           0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.35); }
           70% { box-shadow: 0 0 0 22px rgba(139,92,246,0); }
           100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
         }
-        @keyframes spinSlow { to { transform: rotate(360deg); } }
-        @keyframes gridPan {
-          to { background-position: 56px 56px; }
-        }
-
         .rv-fade { opacity: 0; animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) forwards; }
-        .rv-d1 { animation-delay: .1s; }
-        .rv-d2 { animation-delay: .25s; }
-        .rv-d3 { animation-delay: .4s; }
-        .rv-d4 { animation-delay: .55s; }
+        .rv-d1 { animation-delay: .1s; } .rv-d2 { animation-delay: .25s; }
+        .rv-d3 { animation-delay: .4s; } .rv-d4 { animation-delay: .55s; }
         .rv-d5 { animation-delay: .7s; }
-
         @media (prefers-reduced-motion: reduce) {
           .rv-fade { opacity: 1; animation: none; }
-          .rv-anim { animation: none !important; }
+          .ab-anim, .rv-anim { animation: none !important; }
         }
       `}</style>
 
       <Navbar />
 
       <main className="relative overflow-hidden bg-[#030712] text-slate-100 antialiased">
-        {/* Ambient background */}
-        <div className="pointer-events-none absolute inset-0">
-          <div
-            className="rv-anim absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-              backgroundSize: "56px 56px",
-              animation: "gridPan 8s linear infinite",
-              maskImage:
-                "radial-gradient(ellipse 80% 60% at 50% 0%,#000 40%,transparent 100%)",
-            }}
-          />
-          <div className="absolute left-1/2 top-0 h-px w-[42rem] max-w-[90vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-violet-400/60 to-transparent" />
-        </div>
+        {/* Global animated background */}
+        <AnimatedBackground />
 
         {/* HERO */}
         <section className="relative">
@@ -109,7 +163,6 @@ export default function Home() {
               className="rv-anim absolute right-0 top-24 h-[24rem] w-[24rem] rounded-full bg-cyan-500/20 blur-[120px] sm:h-[30rem] sm:w-[30rem]"
               style={{ animation: "drift 16s ease-in-out infinite reverse" }}
             />
-            <div className="absolute bottom-0 left-1/3 h-[22rem] w-[22rem] rounded-full bg-fuchsia-500/10 blur-[120px]" />
           </div>
 
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-16">
@@ -222,7 +275,7 @@ export default function Home() {
         </section>
 
         {/* STEPS */}
-        <section className="relative border-t border-white/10 bg-[#050b1f]">
+        <section className="relative border-t border-white/10 bg-[#050b1f]/80 backdrop-blur-sm">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
           <div className="mx-auto max-w-7xl px-5 py-20 sm:px-6 sm:py-24">
