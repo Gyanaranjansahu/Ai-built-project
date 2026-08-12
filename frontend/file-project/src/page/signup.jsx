@@ -87,19 +87,67 @@ const Register = () => {
 
   return (
     <>
+      <style>{`
+        @keyframes rgDrift {
+          0%,100% { transform: translate(0,0); }
+          50% { transform: translate(26px,-20px); }
+        }
+        @keyframes rgFadeUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rgItemIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rgLogoGlow {
+          0%,100% { box-shadow: 0 8px 24px -6px rgba(139,92,246,0.5); }
+          50% { box-shadow: 0 8px 30px -4px rgba(34,211,238,0.55); }
+        }
+        .rg-card { animation: rgFadeUp .7s cubic-bezier(.22,1,.36,1) both; }
+        .rg-item { opacity: 0; animation: rgItemIn .5s cubic-bezier(.22,1,.36,1) forwards; }
+        @media (prefers-reduced-motion: reduce) {
+          .rg-card, .rg-item { opacity: 1; animation: none !important; }
+          .rg-anim { animation: none !important; }
+        }
+      `}</style>
+
       <Navbar />
 
-      <div className="min-h-screen pt-20 flex items-center justify-center relative overflow-hidden bg-[#020617] px-4">
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#020617] px-4 pt-24 pb-12 sm:px-6">
+        {/* fine grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%,#000 40%,transparent 100%)",
+          }}
+        />
+
         {/* Background Glow */}
-        <div className="absolute top-20 left-10 h-72 w-72 rounded-full bg-violet-600/20 blur-3xl" />
-        <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+        <div
+          className="rg-anim pointer-events-none absolute left-6 top-24 h-64 w-64 rounded-full bg-violet-600/25 blur-3xl sm:h-72 sm:w-72"
+          style={{ animation: "rgDrift 14s ease-in-out infinite" }}
+        />
+        <div
+          className="rg-anim pointer-events-none absolute bottom-10 right-6 h-64 w-64 rounded-full bg-cyan-500/25 blur-3xl sm:h-72 sm:w-72"
+          style={{ animation: "rgDrift 18s ease-in-out infinite reverse" }}
+        />
 
         {/* Auth Card */}
-        <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl shadow-black/40">
+        <div className="rg-card relative w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/50 backdrop-blur-2xl sm:p-8">
+          {/* top hairline beam */}
+          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/60 to-transparent" />
+
           {/* Logo */}
-          <div className="flex justify-center mb-7">
+          <div className="mb-7 flex justify-center">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/30">
+              <div
+                className="rg-anim flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-400"
+                style={{ animation: "rgLogoGlow 4s ease-in-out infinite" }}
+              >
                 <BrainCircuit className="text-white" size={28} />
               </div>
               <div>
@@ -111,8 +159,8 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-violet-500/10 border border-violet-400/20 px-3 py-1 text-xs text-violet-300 mb-4">
+          <div className="mb-8 text-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs text-violet-300">
               <Sparkles size={14} />
               AI Resume Analysis
             </div>
@@ -125,10 +173,10 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Image Upload Field */}
-            <div>
-              <label className="text-sm text-slate-300 block mb-2">Profile Image</label>
+            <div className="rg-item" style={{ animationDelay: ".05s" }}>
+              <label className="mb-2 block text-sm text-slate-300">Profile Image</label>
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full border border-white/10 bg-black/20 flex items-center justify-center overflow-hidden shrink-0">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-black/20 ring-2 ring-violet-500/10">
                   {imagePreview ? (
                     <img
                       src={imagePreview}
@@ -140,9 +188,11 @@ const Register = () => {
                   )}
                 </div>
 
-                <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer rounded-xl bg-black/20 border border-white/10 px-4 py-3 text-sm text-slate-300 hover:text-white hover:border-violet-500 transition">
+                <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-300 transition duration-300 hover:border-violet-500/60 hover:bg-violet-500/10 hover:text-white">
                   <Upload size={18} />
-                  <span>{profileImage ? profileImage.name : "Choose an image"}</span>
+                  <span className="truncate">
+                    {profileImage ? profileImage.name : "Choose an image"}
+                  </span>
                   <input
                     type="file"
                     accept="image/*"
@@ -153,7 +203,7 @@ const Register = () => {
               </div>
             </div>
 
-            <div>
+            <div className="rg-item" style={{ animationDelay: ".12s" }}>
               <label className="text-sm text-slate-300">Name</label>
               <input
                 type="text"
@@ -163,11 +213,11 @@ const Register = () => {
                   if (error) setError("");
                 }}
                 placeholder="John Doe"
-                className="mt-2 w-full rounded-xl bg-black/20 border border-white/10 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30 transition"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
               />
             </div>
 
-            <div>
+            <div className="rg-item" style={{ animationDelay: ".19s" }}>
               <label className="text-sm text-slate-300">Email</label>
               <input
                 type="email"
@@ -177,11 +227,11 @@ const Register = () => {
                   if (error) setError("");
                 }}
                 placeholder="example@email.com"
-                className="mt-2 w-full rounded-xl bg-black/20 border border-white/10 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30 transition"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
               />
             </div>
 
-            <div>
+            <div className="rg-item" style={{ animationDelay: ".26s" }}>
               <label className="text-sm text-slate-300">Password</label>
               <div className="relative">
                 <input
@@ -192,13 +242,14 @@ const Register = () => {
                     if (error) setError("");
                   }}
                   placeholder="********"
-                  className="mt-2 w-full rounded-xl bg-black/20 border border-white/10 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30 transition"
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-5 text-slate-400 hover:text-white"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-4 top-5 text-slate-400 transition hover:text-white"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -213,17 +264,21 @@ const Register = () => {
 
             <button
               disabled={loading}
-              className="w-full rounded-xl py-3 font-semibold text-white bg-gradient-to-r from-violet-500 to-cyan-500 shadow-lg shadow-violet-500/20 transition hover:-translate-y-1 hover:shadow-violet-500/40 disabled:opacity-50"
+              className="rg-item group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 py-3 font-semibold text-white shadow-lg shadow-violet-500/20 transition duration-300 hover:-translate-y-1 hover:shadow-violet-500/40 active:scale-95 disabled:opacity-50"
+              style={{ animationDelay: ".33s" }}
             >
-              {loading ? "Creating account..." : "Create Account"}
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="relative">
+                {loading ? "Creating account..." : "Create Account"}
+              </span>
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-400 mt-7">
+          <p className="mt-7 text-center text-sm text-slate-400">
             Already have an account?
             <Link
               to="/login"
-              className="ml-2 text-cyan-400 hover:text-cyan-300 font-medium"
+              className="ml-2 font-medium text-cyan-400 transition hover:text-cyan-300"
             >
               Login
             </Link>
