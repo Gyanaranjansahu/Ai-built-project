@@ -19,6 +19,7 @@ const Profile = () => {
       if (removeAccount) {
         navigate("/login");
       }
+      return
     } catch (error) {
       console.error("Failed to delete profile:", error);
     } finally {
@@ -105,10 +106,6 @@ const Profile = () => {
                 <IdCard size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium">User ID</p>
-                <p className="text-xs font-mono font-semibold text-slate-200 truncate">
-                  {userData?._id || "N/A"}
-                </p>
               </div>
             </div>
 
