@@ -86,9 +86,9 @@ export default async function add(req, res) {
     // ==============================
     // 8. Send welcome email
     // ==============================
-
+ console.log("📧 Starting welcome email...");
     try {
-      console.log("📧 Starting welcome email...");
+     
 
       const emailResult = await sendEmail({
         to: user.email,
