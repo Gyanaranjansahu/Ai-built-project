@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { User, Mail, Camera } from "lucide-react";
+import React, { useState, useEffect, useContext } from "react";
+import { User, Camera, ArrowLeft, ShieldCheck, Sparkles, Loader2, Save } from "lucide-react";
 import { authContext } from "../authentication/authcontect.jsx";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../authentication/hookcontroll.js";
@@ -9,104 +9,137 @@ const UpdateProfile = () => {
   const navigate = useNavigate();
   const { updateUserProfile } = useAuth();
 
+  const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState(null);
   const [users, setUsers] = useState({
     name: "",
-    email: "",
     profileImage: null,
   });
 
-  const { name, email, profileImage } = users;
+  const { name, profileImage } = users;
 
-  // Load current user details into the form
+  // Load current user details
   useEffect(() => {
     if (user?.data) {
-      setUsers({
+      setUsers((prev) => ({
+        ...prev,
         name: user.data.name || "",
-        email: user.data.email || "",
-        profileImage: null,
-      });
+      }));
+      setPreview(user.data.profileImage || null);
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
 
-    setUsers((prev) => ({
-      ...prev,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    if (type === "file" && files[0]) {
+      const file = files[0];
+      setUsers((prev) => ({ ...prev, profileImage: file }));
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setUsers((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const updatedProfile = await updateUserProfile(users);
-
       console.log("Profile updated successfully:", updatedProfile);
-
       navigate("/dashboard");
     } catch (error) {
       console.error("Failed to update profile:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-8 text-black">
-      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden grid lg:grid-cols-2">
-        {/* Left Section */}
-        <div className="hidden lg:flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-blue-500 to-cyan-500 text-white p-10">
-          <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg">
-            <img
-              src={
-                profileImage
-                  ? URL.createObjectURL(profileImage)
-                  : user?.data?.profileImage ||
-                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              }
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-          </div>
+    <div className="relative min-h-screen bg-[#030712] text-white flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
+      {/* Background Ambience & Lighting */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+      <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-violet-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-cyan-600/20 blur-[120px]" />
 
-          <h2 className="mt-6 text-3xl font-bold">Update Profile</h2>
+      {/* Glassmorphic Container Card */}
+      <div className="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-slate-900/50 backdrop-blur-2xl shadow-2xl shadow-black/80 grid lg:grid-cols-12">
+        {/* Left Decorative Sidebar (4 cols) */}
+        <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-10 border-r border-white/10 bg-gradient-to-b from-violet-600/10 via-transparent to-cyan-500/10 relative overflow-hidden">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition duration-200"
+          >
+            <ArrowLeft size={16} /> Back to Dashboard
+          </button>
 
-          <p className="mt-3 text-center text-indigo-100 max-w-sm">
-            Update your personal information and keep your account details
-            up-to-date.
-          </p>
-        </div>
-
-        {/* Right Section */}
-        <div className="p-6 sm:p-8 md:p-10">
-          {/* Mobile Heading */}
-          <div className="lg:hidden text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-800">
-              Update Profile
+          <div className="my-auto space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-3.5 py-1.5 text-xs font-medium text-violet-300">
+              <Sparkles size={14} /> Profile Settings
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
+              Personalize your account details
             </h2>
-
-            <p className="text-slate-500 mt-2">
-              Manage your account information
+            <p className="text-sm leading-relaxed text-slate-400">
+              Keep your profile updated so recruiters and system neural engines can accurately process your career information.
             </p>
           </div>
 
-          {/* Profile Image */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="relative">
-              <img
-                src={
-                  profileImage
-                    ? URL.createObjectURL(profileImage)
-                    : user?.data?.profileImage ||
-                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-indigo-100 shadow-md"
-              />
+          <div className="flex items-center gap-3 pt-6 border-t border-white/5 text-xs text-slate-500">
+            <ShieldCheck size={16} className="text-emerald-400" />
+            <span>Encrypted & Confidential</span>
+          </div>
+        </div>
 
+        {/* Right Form Area (7 cols) */}
+        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
+          {/* Header Mobile Only */}
+          <div className="lg:hidden flex items-center justify-between mb-8">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <span className="text-sm font-semibold text-slate-300">Edit Profile</span>
+            <div className="w-8" />
+          </div>
+
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Update Profile
+            </h1>
+            <p className="text-sm text-slate-400 mt-1">
+              Customize your display name and profile picture.
+            </p>
+          </div>
+
+          {/* Profile Image Preview Section */}
+          <div className="flex flex-col items-center sm:items-start mb-8">
+            <div className="relative group">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 border-2 border-violet-500/30 bg-slate-950/80 shadow-xl overflow-hidden relative">
+                <img
+                  src={
+                    preview ||
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
+                  alt="Profile Preview"
+                  className="w-full h-full object-cover rounded-full transition duration-300 group-hover:scale-105"
+                />
+              </div>
+
+              {/* Camera Action Overlay */}
               <label
                 htmlFor="profileImage"
-                className="absolute bottom-1 right-1 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full cursor-pointer transition"
+                className="absolute bottom-1 right-1 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white p-3 rounded-full cursor-pointer shadow-lg transition-all duration-300 hover:scale-110 border border-white/20"
               >
                 <Camera size={18} />
               </label>
@@ -120,24 +153,23 @@ const UpdateProfile = () => {
                 className="hidden"
               />
             </div>
-
-            <p className="mt-4 text-sm text-slate-500">
-              Click the camera icon to upload a new photo
+            <p className="mt-3 text-xs text-slate-400">
+              Allowed JPG, PNG or WEBP. Maximum file size 5MB.
             </p>
           </div>
 
           {/* Form */}
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Name */}
+            {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Full Name
               </label>
 
-              <div className="relative">
+              <div className="relative group">
                 <User
-                  size={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-violet-400 transition-colors"
                 />
 
                 <input
@@ -146,40 +178,27 @@ const UpdateProfile = () => {
                   value={name}
                   onChange={handleChange}
                   placeholder="Enter your full name"
-                  className="w-full rounded-xl border border-slate-300 py-3 pl-12 pr-4 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                  required
+                  className="w-full rounded-2xl border border-white/10 bg-slate-950/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition duration-200"
                 />
               </div>
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Email Address
-              </label>
-
-              <div className="relative">
-                <Mail
-                  size={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                  placeholder="Enter your email address"
-                  className="w-full rounded-xl border border-slate-300 py-3 pl-12 pr-4 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
-                />
-              </div>
-            </div>
-
-            {/* Update Button */}
+            {/* Save Button */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition duration-300"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white font-semibold py-3.5 px-6 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Update Profile
+              {loading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" /> Saving Changes...
+                </>
+              ) : (
+                <>
+                  <Save size={18} /> Save Changes
+                </>
+              )}
             </button>
           </form>
         </div>

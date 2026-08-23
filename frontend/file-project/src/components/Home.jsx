@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,6 +9,10 @@ import {
   Sparkles,
   ShieldCheck,
   Zap,
+  Cpu,
+  BarChart3,
+  Flame,
+  Star,
 } from "lucide-react";
 
 import ConfidenceRing from "../components/ConfidenceRing";
@@ -17,24 +22,35 @@ import Footer from "./Footer";
 const steps = [
   {
     icon: FileText,
-    title: "Upload your resume",
-    copy: "Drop your resume and let AI understand your skills, experience, and achievements.",
+    step: "01",
+    tag: "Instant Parsing",
+    title: "Upload Your Resume",
+    copy: "Drop your PDF/DOCX resume and let our neural network parse your skills, impact metrics, and domain experience instantly.",
   },
   {
     icon: UserCircle2,
-    title: "Add your profile",
-    copy: "Tell us about your goals, experience, and the role you want.",
+    step: "02",
+    tag: "Target Alignment",
+    title: "Define Target Persona",
+    copy: "Select your desired seniority tier, target industry, and career goals to anchor our contextual optimization engine.",
   },
   {
     icon: Briefcase,
-    title: "Match with jobs",
-    copy: "Compare your resume with job descriptions and discover your chances.",
+    step: "03",
+    tag: "Actionable Match",
+    title: "Real-time Job Matching",
+    copy: "Cross-reference your background against thousands of real-time job descriptions to isolate gap areas and callback odds.",
   },
 ];
 
-// deterministic pseudo-random so particles don't jump between renders
-const particles = Array.from({ length: 22 }, (_, i) => {
-  const seed = (n) => ((Math.sin(i * 99.7 + n) + 1) / 2);
+const metrics = [
+  { value: "98.4%", label: "ATS Pass Rate", sub: "Engineered for top screening algorithms" },
+  { value: "3.5x", label: "More Interviews", sub: "Average conversion increase reported" },
+  { value: "< 10s", label: "Analysis Speed", sub: "Instant AI match reports & gap analysis" },
+];
+
+const particles = Array.from({ length: 24 }, (_, i) => {
+  const seed = (n) => (Math.sin(i * 99.7 + n) + 1) / 2;
   return {
     left: seed(1) * 100,
     top: seed(2) * 100,
@@ -48,31 +64,31 @@ const particles = Array.from({ length: 22 }, (_, i) => {
 function AnimatedBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* aurora mesh */}
+      {/* Aurora Mesh Blur */}
       <div
         className="ab-anim absolute -inset-[20%] opacity-60"
         style={{
           background:
             "radial-gradient(40% 40% at 20% 30%, rgba(139,92,246,0.35), transparent 60%), radial-gradient(35% 35% at 80% 20%, rgba(34,211,238,0.28), transparent 60%), radial-gradient(45% 45% at 60% 80%, rgba(217,70,239,0.22), transparent 60%)",
-          filter: "blur(40px)",
-          animation: "auroraShift 20s ease-in-out infinite",
+          filter: "blur(60px)",
+          animation: "auroraShift 22s ease-in-out infinite",
         }}
       />
 
-      {/* panning grid */}
+      {/* Grid Pattern with Vignette Mask */}
       <div
         className="ab-anim absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage:
             "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-          backgroundSize: "56px 56px",
-          animation: "gridPan 8s linear infinite",
+          backgroundSize: "64px 64px",
+          animation: "gridPan 12s linear infinite",
           maskImage:
-            "radial-gradient(ellipse 90% 70% at 50% 20%,#000 40%,transparent 100%)",
+            "radial-gradient(ellipse 85% 65% at 50% 20%,#000 40%,transparent 100%)",
         }}
       />
 
-      {/* sweeping beams */}
+      {/* Vertical Light Beams */}
       <div
         className="ab-anim absolute left-1/2 top-0 h-[120vh] w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-violet-400/40 to-transparent"
         style={{ animation: "beamSweep 14s ease-in-out infinite" }}
@@ -82,7 +98,7 @@ function AnimatedBackground() {
         style={{ animation: "beamSweep 18s ease-in-out infinite reverse" }}
       />
 
-      {/* floating particles */}
+      {/* Glowing Floating Dust Particles */}
       {particles.map((p, i) => (
         <span
           key={i}
@@ -93,11 +109,11 @@ function AnimatedBackground() {
             width: `${p.size}px`,
             height: `${p.size}px`,
             background: p.violet
-              ? "rgba(167,139,250,0.8)"
-              : "rgba(34,211,238,0.8)",
+              ? "rgba(167,139,250,0.85)"
+              : "rgba(34,211,238,0.85)",
             boxShadow: p.violet
-              ? "0 0 10px 2px rgba(167,139,250,0.5)"
-              : "0 0 10px 2px rgba(34,211,238,0.5)",
+              ? "0 0 12px 3px rgba(167,139,250,0.6)"
+              : "0 0 12px 3px rgba(34,211,238,0.6)",
             animation: `floatParticle ${p.duration}s ease-in-out ${p.delay}s infinite`,
           }}
         />
@@ -115,7 +131,7 @@ export default function Home() {
           33% { transform: translate(4%,-3%) rotate(8deg) scale(1.08); }
           66% { transform: translate(-3%,4%) rotate(-6deg) scale(1.04); }
         }
-        @keyframes gridPan { to { background-position: 56px 56px; } }
+        @keyframes gridPan { to { background-position: 64px 64px; } }
         @keyframes beamSweep {
           0%,100% { transform: translateX(-40vw); opacity: 0; }
           50% { transform: translateX(40vw); opacity: 1; }
@@ -136,10 +152,29 @@ export default function Home() {
           70% { box-shadow: 0 0 0 22px rgba(139,92,246,0); }
           100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
         }
+
+        .rv-glow-card {
+          position: relative;
+          background: rgba(15, 23, 42, 0.45);
+        }
+        .rv-glow-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 1px;
+          background: linear-gradient(135deg, rgba(167,139,250,0.35), rgba(56,189,248,0.1), rgba(167,139,250,0.15));
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+        }
+
         .rv-fade { opacity: 0; animation: fadeUp 0.8s cubic-bezier(.22,1,.36,1) forwards; }
         .rv-d1 { animation-delay: .1s; } .rv-d2 { animation-delay: .25s; }
         .rv-d3 { animation-delay: .4s; } .rv-d4 { animation-delay: .55s; }
         .rv-d5 { animation-delay: .7s; }
+
         @media (prefers-reduced-motion: reduce) {
           .rv-fade { opacity: 1; animation: none; }
           .ab-anim, .rv-anim { animation: none !important; }
@@ -148,121 +183,132 @@ export default function Home() {
 
       <Navbar />
 
-      <main className="relative overflow-hidden bg-[#030712] text-slate-100 antialiased">
-        {/* Global animated background */}
+      <main className="relative min-h-screen overflow-hidden bg-[#030712] text-slate-100 antialiased">
         <AnimatedBackground />
 
-        {/* HERO */}
-        <section className="relative">
+        {/* HERO SECTION */}
+        <section className="relative pt-8 pb-20 sm:pt-16 sm:pb-28">
           <div className="pointer-events-none absolute inset-0">
             <div
-              className="rv-anim absolute -left-24 top-0 h-[26rem] w-[26rem] rounded-full bg-violet-600/25 blur-[120px] sm:h-[34rem] sm:w-[34rem]"
+              className="rv-anim absolute -left-24 top-0 h-[28rem] w-[28rem] rounded-full bg-violet-600/25 blur-[120px] sm:h-[36rem] sm:w-[36rem]"
               style={{ animation: "drift 12s ease-in-out infinite" }}
             />
             <div
-              className="rv-anim absolute right-0 top-24 h-[24rem] w-[24rem] rounded-full bg-cyan-500/20 blur-[120px] sm:h-[30rem] sm:w-[30rem]"
+              className="rv-anim absolute right-0 top-24 h-[26rem] w-[26rem] rounded-full bg-cyan-500/20 blur-[120px] sm:h-[32rem] sm:w-[32rem]"
               style={{ animation: "drift 16s ease-in-out infinite reverse" }}
             />
           </div>
 
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-16">
-            {/* LEFT */}
-            <div className="text-center lg:text-left">
-              <div className="rv-fade rv-d1 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm text-violet-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
-                <Sparkles size={16} className="text-violet-300" />
-                AI Powered Resume Intelligence
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-6 lg:grid-cols-12 lg:gap-8">
+            {/* LEFT CONTENT (7 COLS) */}
+            <div className="text-center lg:col-span-7 lg:text-left">
+              <div className="rv-fade rv-d1 inline-flex items-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-violet-300 shadow-[0_0_20px_rgba(139,92,246,0.15)] backdrop-blur-xl">
+                <Cpu size={14} className="text-violet-400 animate-pulse" />
+                <span>Next-Gen Career Intelligence Platform</span>
               </div>
 
-              <h1 className="rv-fade rv-d2 mt-7 text-balance text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-7xl">
-                Build a resume
+              <h1 className="rv-fade rv-d2 mt-7 text-balance text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+                Architect a resume
                 <span
-                  className="rv-anim mt-1 block bg-clip-text text-transparent"
+                  className="rv-anim mt-2 block bg-clip-text text-transparent"
                   style={{
                     backgroundImage:
-                      "linear-gradient(90deg,#c4b5fd,#f0abfc,#a5f3fc,#c4b5fd)",
+                      "linear-gradient(90deg,#c4b5fd,#38bdf8,#a78bfa,#34d399,#c4b5fd)",
                     backgroundSize: "200% auto",
-                    animation: "shimmerText 5s linear infinite",
+                    animation: "shimmerText 6s linear infinite",
                   }}
                 >
-                  that gets noticed.
+                  recruiters can't ignore.
                 </span>
               </h1>
 
-              <p className="rv-fade rv-d3 mx-auto mt-6 max-w-xl text-pretty text-base leading-8 text-slate-300/90 sm:text-lg lg:mx-0">
-                ResumeAI analyzes your resume against real job descriptions,
-                identifies missing skills, and gives you actionable improvements
-                to increase your career opportunities.
+              <p className="rv-fade rv-d3 mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-slate-300/90 sm:text-lg lg:mx-0">
+                ResumeAI bridges the gap between your true experience and opaque applicant tracking systems. Analyze semantic fit, resolve critical skill gaps, and accelerate interview invites.
               </p>
 
-              <div className="rv-fade rv-d4 mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
+              {/* Action Buttons */}
+              <div className="rv-fade rv-d4 mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-5 lg:justify-start">
                 <Link
                   to="/analyze"
-                  className="group relative flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet-500/30 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-500/40 active:scale-95"
+                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 px-8 py-4 text-sm font-semibold text-white shadow-xl shadow-violet-600/30 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet-600/40 active:scale-95"
                 >
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                  Analyze Resume
+                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <Sparkles size={18} className="text-cyan-200" />
+                  <span>Analyze Resume Free</span>
                   <ArrowRight size={18} className="transition group-hover:translate-x-1" />
                 </Link>
 
                 <Link
                   to="/dashboard"
-                  className="rounded-xl border border-white/10 bg-white/5 px-7 py-3.5 font-semibold text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10 active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-sm font-semibold text-white backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-white/25 hover:bg-white/10 active:scale-95"
                 >
-                  Get Started
+                  <span>Explore Dashboard</span>
                 </Link>
               </div>
 
-              <div className="rv-fade rv-d5 mt-12 flex flex-wrap items-center justify-center gap-5 text-sm lg:justify-start">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <ShieldCheck size={18} className="text-emerald-400" />
-                  Secure &amp; private
+              {/* Trust Micro-Badges */}
+              <div className="rv-fade rv-d5 mt-12 flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-400 lg:justify-start">
+                <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3.5 py-1.5 text-emerald-300">
+                  <ShieldCheck size={16} />
+                  <span>SOC-2 Aligned Security</span>
                 </div>
-                <div className="hidden h-4 w-px bg-white/10 sm:block" />
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Zap size={18} className="text-amber-300" />
-                  Instant AI Analysis
+                <div className="flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-500/10 px-3.5 py-1.5 text-amber-300">
+                  <Zap size={16} />
+                  <span>Instant ATS Simulation</span>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT CARD */}
-            <div className="rv-fade rv-d3 relative flex justify-center">
+            {/* RIGHT HERO INTERACTIVE CARD (5 COLS) */}
+            <div className="rv-fade rv-d3 relative lg:col-span-5 flex justify-center">
               <div
-                className="rv-anim absolute h-72 w-72 rounded-full bg-cyan-500/20 blur-[100px]"
+                className="rv-anim absolute h-80 w-80 rounded-full bg-cyan-500/20 blur-[120px]"
                 style={{ animation: "floatYslow 7s ease-in-out infinite" }}
               />
 
+              {/* Floating Glass Box */}
               <div
-                className="rv-anim group relative w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/60 backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-white/20 sm:p-8"
+                className="rv-anim rv-glow-card group relative w-full max-w-md rounded-3xl p-6 sm:p-8 backdrop-blur-2xl transition duration-500 hover:-translate-y-2 shadow-2xl shadow-black/80"
                 style={{ animation: "floatY 6s ease-in-out infinite" }}
               >
-                <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-b from-white/10 to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
-
-                <div className="relative flex items-center justify-between">
+                <div className="relative flex items-center justify-between border-b border-white/10 pb-6">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                      AI Match Score
-                    </p>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-500/10 border border-violet-400/20 px-2.5 py-0.5 text-[10px] font-semibold text-violet-300 uppercase tracking-wider">
+                      <Flame size={12} className="text-amber-400" /> Match Preview
+                    </span>
                     <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
-                      Frontend Engineer
+                      Lead Systems Architect
                     </h2>
+                    <p className="text-xs text-slate-400 mt-0.5">Target: Tier 1 Tech</p>
                   </div>
 
                   <div className="rv-anim rounded-full" style={{ animation: "pulseRing 3s ease-out infinite" }}>
-                    <ConfidenceRing value={92} size={85} strokeWidth={8} />
+                    <ConfidenceRing value={94} size={84} strokeWidth={8} />
                   </div>
                 </div>
 
-                <div className="relative my-6 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent sm:my-7" />
+                {/* Sub-Metrics Section */}
+                <div className="my-6 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-white/5 bg-white/[0.03] p-3 text-center">
+                    <div className="text-xs text-slate-400">Keyword Density</div>
+                    <div className="text-lg font-bold text-emerald-400 mt-0.5">Optimal (98%)</div>
+                  </div>
+                  <div className="rounded-xl border border-white/5 bg-white/[0.03] p-3 text-center">
+                    <div className="text-xs text-slate-400">ATS Parsing</div>
+                    <div className="text-lg font-bold text-cyan-400 mt-0.5">Verified Pass</div>
+                  </div>
+                </div>
 
-                <p className="relative mb-4 text-sm text-slate-400">Skills detected</p>
+                <p className="relative mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Detected Core Competencies
+                </p>
 
                 <div className="relative flex flex-wrap gap-2">
-                  {["React", "Node.js", "TypeScript", "AI Tools"].map((skill, i) => (
+                  {["System Architecture", "TypeScript", "Distributed Systems", "Cloud Security"].map((skill, i) => (
                     <span
                       key={skill}
-                      className="rv-fade flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300 transition hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-emerald-500/15"
-                      style={{ animationDelay: `${0.6 + i * 0.12}s` }}
+                      className="rv-fade flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300 backdrop-blur-md transition hover:border-emerald-400/40 hover:bg-emerald-500/20"
+                      style={{ animationDelay: `${0.6 + i * 0.1}s` }}
                     >
                       <CheckCircle2 size={13} />
                       {skill}
@@ -274,37 +320,57 @@ export default function Home() {
           </div>
         </section>
 
-        {/* STEPS */}
-        <section className="relative border-t border-white/10 bg-[#050b1f]/80 backdrop-blur-sm">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+        {/* METRICS & PROOF BAR */}
+        <section className="relative border-y border-white/10 bg-slate-950/60 backdrop-blur-xl">
+          <div className="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+            <div className="grid gap-8 sm:grid-cols-3">
+              {metrics.map((m) => (
+                <div key={m.label} className="text-center sm:text-left sm:border-l sm:border-white/10 sm:pl-8 first:border-none first:pl-0">
+                  <div className="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-cyan-300 to-white">
+                    {m.value}
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-white">{m.label}</div>
+                  <div className="mt-0.5 text-xs text-slate-400">{m.sub}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-          <div className="mx-auto max-w-7xl px-5 py-20 sm:px-6 sm:py-24">
-            <div className="mb-14 text-center sm:mb-16">
-              <p className="text-sm uppercase tracking-[0.25em] text-cyan-400">How it works</p>
-              <h2 className="mt-4 text-balance text-3xl font-bold text-white sm:text-4xl">
-                Three steps to a better career
+        {/* 3-STEP PROCESS SECTION */}
+        <section className="relative py-24 sm:py-32">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6">
+            <div className="mb-16 text-center">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-cyan-300">
+                <BarChart3 size={14} /> Workflow Precision
+              </span>
+              <h2 className="mt-4 text-balance text-3xl font-extrabold text-white sm:text-5xl tracking-tight">
+                Three steps to a higher interview rate
               </h2>
             </div>
 
-            <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-3">
               {steps.map((step, index) => (
                 <div
                   key={step.title}
-                  className="rv-fade group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:border-violet-400/40 hover:bg-white/[0.06] sm:p-8"
+                  className="rv-fade rv-glow-card group relative overflow-hidden rounded-3xl p-8 backdrop-blur-xl transition duration-500 hover:-translate-y-2"
                   style={{ animationDelay: `${0.15 * index}s` }}
                 >
-                  <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-violet-500/10 blur-2xl opacity-0 transition duration-500 group-hover:opacity-100" />
-
-                  <span className="text-sm font-bold tracking-widest text-violet-300/80">
-                    0{index + 1}
-                  </span>
-
-                  <div className="mt-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/30 to-cyan-500/30 shadow-inner shadow-white/5 transition duration-500 group-hover:scale-110 group-hover:rotate-3">
-                    <step.icon className="text-white" size={24} />
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-3xl font-black text-white/20 group-hover:text-violet-400/60 transition-colors">
+                      {step.step}
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-slate-300">
+                      {step.tag}
+                    </span>
                   </div>
 
-                  <h3 className="mt-6 text-xl font-bold text-white">{step.title}</h3>
-                  <p className="mt-3 leading-7 text-slate-400">{step.copy}</p>
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-cyan-300 transition duration-500 group-hover:scale-110 group-hover:bg-violet-500/20">
+                    <step.icon size={26} />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-white">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{step.copy}</p>
                 </div>
               ))}
             </div>
