@@ -173,7 +173,7 @@ export default function NotFound() {
           {/* Decorative divider */}
           <div className="mt-16 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
           <p className="mt-8 font-mono text-xs uppercase tracking-wider text-slate-400">
-            Primer &middot; Interview prep, made specific
+             &middot; Interview prep, made specific
           </p>
         </section>
       </div>

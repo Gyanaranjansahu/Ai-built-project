@@ -1,178 +1,184 @@
-import { Loader2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Sparkles, Brain, CheckCircle2, ShieldCheck, Cpu } from "lucide-react";
 import Navbar from "../components/Nav.jsx";
 import Footer from "../components/Footer";
 
-// deterministic raindrops so they don't jump between renders
-const rain = Array.from({ length: 60 }, (_, i) => {
-  const seed = (n) => (Math.sin(i * 77.3 + n) + 1) / 2;
+// Deterministic ambient glow nodes
+const nodes = Array.from({ length: 12 }, (_, i) => {
+  const seed = (n) => (Math.sin(i * 43.1 + n) + 1) / 2;
   return {
     left: seed(1) * 100,
-    delay: seed(2) * -1.2,
-    duration: 0.5 + seed(3) * 0.5,
-    height: 40 + seed(4) * 60,
-    opacity: 0.15 + seed(5) * 0.35,
+    top: seed(2) * 100,
+    size: 3 + seed(3) * 5,
+    duration: 8 + seed(4) * 10,
+    delay: seed(5) * -10,
   };
 });
 
+const defaultSteps = [
+  "Parsing profile architecture",
+  "Synthesizing key competencies",
+  "Calibrating AI insights",
+  "Finalizing response payload",
+];
+
 export default function LoadingPage({ message = "Reading between the lines..." }) {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // Cycle through contextual processing steps
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStep((prev) => (prev < defaultSteps.length - 1 ? prev + 1 : prev));
+    }, 1800);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <style>{`
-        @keyframes pulse-glow {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.75; transform: scale(1.2); }
+        @keyframes auroraGlow {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+          50% { transform: translate(5%, -5%) scale(1.15); opacity: 0.7; }
         }
-        @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes pulseRing {
+          0% { transform: scale(0.95); opacity: 0.8; }
+          50% { transform: scale(1.05); opacity: 0.3; }
+          100% { transform: scale(0.95); opacity: 0.8; }
         }
-        @keyframes shimmer {
+        @keyframes shimmerLine {
           0% { transform: translateX(-100%); }
-          100% { transform: translateX(300%); }
+          100% { transform: translateX(200%); }
         }
-        /* --- thunderstorm --- */
-        @keyframes rainFall {
-          0% { transform: translateY(-20vh); }
-          100% { transform: translateY(120vh); }
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
+          50% { transform: translateY(-30px) translateX(15px); opacity: 0.8; }
         }
-        @keyframes cloudDrift {
-          0%,100% { transform: translateX(0); }
-          50% { transform: translateX(40px); }
-        }
-        /* screen-wide lightning flash (irregular timing) */
-        @keyframes lightningFlash {
-          0%, 100% { opacity: 0; }
-          49.5% { opacity: 0; }
-          50% { opacity: 0.9; }
-          50.6% { opacity: 0.25; }
-          51.2% { opacity: 0.85; }
-          52% { opacity: 0; }
-          70% { opacity: 0; }
-          70.4% { opacity: 0.6; }
-          71% { opacity: 0; }
-        }
-        @keyframes boltGlow {
-          0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 4px rgba(147,197,253,0.4)); }
-          48% { opacity: 0.3; }
-          50% { opacity: 1; filter: drop-shadow(0 0 22px rgba(191,219,254,0.95)); }
-          54% { opacity: 0.5; }
-          70% { opacity: 1; filter: drop-shadow(0 0 18px rgba(147,197,253,0.9)); }
-          73% { opacity: 0.4; }
-        }
-        .lp-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
-        .lp-orbit { animation: orbit-spin 3s linear infinite; }
-        .lp-fade-1 { animation: fade-up 0.6s ease-out both; }
-        .lp-fade-2 { animation: fade-up 0.6s ease-out 0.1s both; }
-        .lp-fade-3 { animation: fade-up 0.6s ease-out 0.2s both; }
-        .lp-fade-4 { animation: fade-up 0.6s ease-out 0.3s both; }
-        .lp-fade-5 { animation: fade-up 0.6s ease-out 0.4s both; }
-        .lp-shimmer { animation: shimmer 1.8s ease-in-out infinite; }
-        .lp-flash { animation: lightningFlash 7s ease-in-out infinite; }
-        .lp-flash-2 { animation: lightningFlash 11s ease-in-out 3s infinite; }
-        .lp-bolt { animation: boltGlow 7s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce) {
-          .lp-glow,.lp-orbit,.lp-shimmer,.lp-flash,.lp-flash-2,.lp-bolt,.lp-rain { animation: none !important; }
-          .lp-flash,.lp-flash-2 { opacity: 0 !important; }
-        }
+        .animate-aurora { animation: auroraGlow 14s ease-in-out infinite; }
+        .animate-pulse-ring { animation: pulseRing 3s ease-in-out infinite; }
+        .animate-shimmer { animation: shimmerLine 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-particle { animation: floatParticle ease-in-out infinite; }
       `}</style>
 
       <Navbar />
 
-      <div className="relative w-full overflow-hidden bg-gradient-to-b from-[#05060f] via-[#0a0f24] to-[#050510]">
-        {/* ===== Thunderstorm background ===== */}
+      <main className="relative flex min-h-[calc(100vh-80px)] w-full flex-col items-center justify-center overflow-hidden bg-[#030712] px-6 py-20 text-white">
+        
+        {/* Background Ambient Lighting */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          {/* storm clouds */}
           <div
-            className="lp-rain absolute -top-24 -left-10 h-72 w-[55%] rounded-full bg-slate-800/70 blur-3xl"
-            style={{ animation: "cloudDrift 12s ease-in-out infinite" }}
+            className="animate-aurora absolute -left-[10%] -top-[10%] h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-[120px]"
           />
           <div
-            className="lp-rain absolute -top-16 right-0 h-64 w-[50%] rounded-full bg-slate-900/70 blur-3xl"
-            style={{ animation: "cloudDrift 16s ease-in-out infinite reverse" }}
-          />
-          <div
-            className="lp-rain absolute top-0 left-1/4 h-56 w-[45%] rounded-full bg-slate-700/50 blur-3xl"
-            style={{ animation: "cloudDrift 14s ease-in-out infinite" }}
+            className="animate-aurora absolute -right-[10%] -bottom-[10%] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[120px]"
+            style={{ animationDelay: "-7s" }}
           />
 
-          {/* lightning full-screen flashes */}
-          <div className="lp-flash absolute inset-0 bg-gradient-to-b from-blue-200/30 via-indigo-200/10 to-transparent" />
-          <div className="lp-flash-2 absolute inset-0 bg-gradient-to-b from-white/25 via-violet-200/8 to-transparent" />
+          {/* Subtle Grid overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+              maskImage: "radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 100%)",
+            }}
+          />
 
-          {/* falling rain */}
-          {rain.map((r, i) => (
+          {/* Floating Glow Nodes */}
+          {nodes.map((n, i) => (
             <span
               key={i}
-              className="lp-rain absolute top-0 w-px bg-gradient-to-b from-transparent via-blue-200/60 to-transparent"
+              className="animate-particle absolute rounded-full bg-violet-400/60 shadow-[0_0_10px_rgba(167,139,250,0.5)]"
               style={{
-                left: `${r.left}%`,
-                height: `${r.height}px`,
-                opacity: r.opacity,
-                animation: `rainFall ${r.duration}s linear ${r.delay}s infinite`,
+                left: `${n.left}%`,
+                top: `${n.top}%`,
+                width: `${n.size}px`,
+                height: `${n.size}px`,
+                animationDuration: `${n.duration}s`,
+                animationDelay: `${n.delay}s`,
               }}
             />
           ))}
         </div>
 
-        <section className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-32 text-center">
-          {/* Pulsing icon badge */}
-          <div className="lp-fade-1 relative mb-8">
-            <div className="lp-glow absolute -inset-8 rounded-full bg-blue-500/20 blur-3xl" />
+        {/* Central Card Container */}
+        <div className="relative z-10 mx-auto flex max-w-xl w-full flex-col items-center rounded-3xl border border-white/10 bg-slate-900/40 p-8 sm:p-12 shadow-2xl shadow-black/80 backdrop-blur-2xl">
+          
+          {/* Top Line Accent */}
+          <div className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/60 to-transparent" />
 
-            {/* Orbiting ring */}
-            <div className="lp-orbit absolute -inset-2 rounded-2xl">
-              <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-blue-400 shadow-[0_0_8px_2px_rgba(96,165,250,0.6)]" />
-            </div>
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest text-violet-300 backdrop-blur-xl shadow-lg shadow-violet-500/10 mb-8">
+            <Sparkles size={13} className="animate-pulse text-violet-400" />
+            AI Processing Active
+          </div>
 
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-blue-950/40 backdrop-blur-sm">
-              {/* glowing lightning bolt */}
-              <svg
-                viewBox="0 0 24 24"
-                className="lp-bolt absolute h-10 w-10 text-blue-200"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" />
-              </svg>
-              <Loader2 className="h-9 w-9 animate-spin text-blue-300/70" strokeWidth={1.75} />
+          {/* Central Animated Spinner Icon */}
+          <div className="relative mb-8 flex items-center justify-center">
+            {/* Outer Pulsing Glow */}
+            <div className="animate-pulse-ring absolute h-28 w-28 rounded-3xl bg-violet-500/20 blur-xl" />
+            
+            {/* Rotating Outer Border */}
+            <div className="absolute h-24 w-24 rounded-2xl border border-dashed border-violet-400/40 animate-[spin_10s_linear_infinite]" />
+            
+            {/* Core Box */}
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/5 shadow-2xl backdrop-blur-md">
+              <Brain size={36} className="text-violet-300 animate-pulse" />
             </div>
           </div>
 
-          <span className="lp-fade-2 font-mono text-xs uppercase tracking-widest text-blue-300">
-            Analyzing
-          </span>
-
-          <h1 className="lp-fade-3 mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
+          {/* Dynamic Loading Header */}
+          <h1 className="text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {message}
           </h1>
 
-          <p className="lp-fade-4 mt-6 max-w-sm text-balance text-base text-slate-300">
-            This usually takes a few seconds. Hang tight while we match you up.
+          <p className="mt-3 text-center text-sm text-slate-400">
+            Hold tight! We are optimizing your experience and generating tailored insights.
           </p>
 
-          {/* Progress bar shimmer */}
-          <div className="lp-fade-5 relative mt-10 h-1 w-56 overflow-hidden rounded-full bg-white/10">
-            <div className="lp-shimmer absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400" />
+          {/* Custom Shimmer Progress Bar */}
+          <div className="relative mt-8 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="animate-shimmer absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-violet-500 via-cyan-400 to-emerald-400 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
           </div>
 
-          {/* Progress dots */}
-          <div className="lp-fade-5 mt-6 flex items-center gap-2">
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="h-2 w-2 animate-bounce rounded-full bg-blue-400"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
+          {/* Dynamic Step Status List */}
+          <div className="mt-8 w-full space-y-3 border-t border-white/10 pt-6">
+            {defaultSteps.map((step, idx) => {
+              const isDone = idx < currentStep;
+              const isCurrent = idx === currentStep;
+
+              return (
+                <div
+                  key={idx}
+                  className={`flex items-center gap-3 text-xs transition-all duration-500 ${
+                    isCurrent
+                      ? "text-violet-300 font-medium translate-x-1"
+                      : isDone
+                      ? "text-slate-400"
+                      : "text-slate-600"
+                  }`}
+                >
+                  {isDone ? (
+                    <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                  ) : isCurrent ? (
+                    <Cpu size={16} className="text-violet-400 animate-spin shrink-0" />
+                  ) : (
+                    <div className="h-4 w-4 rounded-full border border-slate-700 shrink-0" />
+                  )}
+                  <span>{step}</span>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="mt-16 h-px w-full bg-white/10" />
-          <p className="mt-8 font-mono text-xs uppercase tracking-wider text-slate-400">
-            Primer &middot; Interview prep, made specific
-          </p>
-        </section>
-      </div>
+          {/* Footer Security Tag */}
+          <div className="mt-8 flex items-center justify-center gap-2 text-[11px] font-mono tracking-wider text-slate-500 uppercase">
+            <ShieldCheck size={14} className="text-slate-400" />
+            <span>Secure &amp; Encrypted Generation</span>
+          </div>
+
+        </div>
+      </main>
 
       <Footer />
     </>
