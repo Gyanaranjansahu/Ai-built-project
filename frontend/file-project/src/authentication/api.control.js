@@ -171,36 +171,22 @@ export async function getAllinterviewReport() {
 }
 
 // =========================
-// UPDATE PROFILE
-// =========================
-export async function updateProfile({
-  name,
-  email,
-  profileImage,
-}) {
+// UPDATE PROFILEimport api from "./axios"; // or your API instance setup
+
+
+export async function updateProfile({ name, profileImage }) {
   try {
     const formData = new FormData();
+    if (name) formData.append("name", name);
+    if (profileImage) formData.append("profileImage", profileImage);
 
-    formData.append("name", name);
-    formData.append("email", email);
-
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
-    }
-
-    const { data } = await api.put(
-      "/api/profile/update",
-      formData
-    );
-
+    const { data } = await api.put("/api/profile/update", formData);
     toast.success(data?.message);
-
     return data;
   } catch (error) {
     handleError(error);
   }
 }
-
 // =========================
 // DELETE PROFILE
 // =========================

@@ -112,19 +112,24 @@ const getReports=async()=>{
   }
 }
 
-const updateUserProfile=async(data)=>{
-  setLoading(true)
+const updateUserProfile = async (data) => {
+  setLoading(true);
   try {
-    const response=await updateProfile(data)
-    setUser(response.user)
+    const response = await updateProfile(data);
+
+    setUser((prev) => ({
+      ...prev,
+      data: { ...prev?.data, ...response.user },
+    }));
+
+    return response;
   } catch (error) {
-    console.log(error);
-    
+    console.error("Failed to update profile:", error);
+    throw error;
+  } finally {
+    setLoading(false);
   }
-  finally{
-    setLoading(false)
-  }
-}
+};
 
 const deleteUserProfile=async()=>{
   setLoading(true)

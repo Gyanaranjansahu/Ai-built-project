@@ -1,43 +1,41 @@
-import React, { useState, useEffect, useContext } from "react";
-import { User, Camera, ArrowLeft, ShieldCheck, Sparkles, Loader2, Save } from "lucide-react";
-import { authContext } from "../authentication/authcontect.jsx";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { User, Camera, ArrowLeft, ShieldCheck, Sparkles, Loader2, Save } from "lucide-react";
 import useAuth from "../authentication/hookcontroll.js";
 
+const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
 const UpdateProfile = () => {
-  const { user } = useContext(authContext);
+  const { user, updateUserProfile } = useAuth();
   const navigate = useNavigate();
-  const { updateUserProfile } = useAuth();
 
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [users, setUsers] = useState({
-    name: "",
-    profileImage: null,
-  });
+  const [loading, setLoading] = useState(false);
 
-  const { name, profileImage } = users;
-
-  // Load current user details
+  // Synchronize state with incoming user data
   useEffect(() => {
     if (user?.data) {
-      setUsers((prev) => ({
-        ...prev,
-        name: user.data.name || "",
-      }));
+      setName(user.data.name || "");
       setPreview(user.data.profileImage || null);
     }
   }, [user]);
 
-  const handleChange = (e) => {
-    const { name, value, files, type } = e.target;
+  // Clean up object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (preview && preview.startsWith("blob:")) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
-    if (type === "file" && files[0]) {
-      const file = files[0];
-      setUsers((prev) => ({ ...prev, profileImage: file }));
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
       setPreview(URL.createObjectURL(file));
-    } else {
-      setUsers((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -46,8 +44,7 @@ const UpdateProfile = () => {
     setLoading(true);
 
     try {
-      const updatedProfile = await updateUserProfile(users);
-      console.log("Profile updated successfully:", updatedProfile);
+      await updateUserProfile({ name, profileImage });
       navigate("/dashboard");
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -58,7 +55,7 @@ const UpdateProfile = () => {
 
   return (
     <div className="relative min-h-screen bg-[#030712] text-white flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-      {/* Background Ambience & Lighting */}
+      {/* Background Ambience */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
@@ -70,9 +67,9 @@ const UpdateProfile = () => {
       <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-violet-600/20 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-cyan-600/20 blur-[120px]" />
 
-      {/* Glassmorphic Container Card */}
+      {/* Main Container */}
       <div className="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-slate-900/50 backdrop-blur-2xl shadow-2xl shadow-black/80 grid lg:grid-cols-12">
-        {/* Left Decorative Sidebar (4 cols) */}
+        {/* Sidebar */}
         <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-10 border-r border-white/10 bg-gradient-to-b from-violet-600/10 via-transparent to-cyan-500/10 relative overflow-hidden">
           <button
             onClick={() => navigate(-1)}
@@ -99,9 +96,9 @@ const UpdateProfile = () => {
           </div>
         </div>
 
-        {/* Right Form Area (7 cols) */}
+        {/* Form Content */}
         <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
-          {/* Header Mobile Only */}
+          {/* Mobile Back Button */}
           <div className="lg:hidden flex items-center justify-between mb-8">
             <button
               onClick={() => navigate(-1)}
@@ -122,21 +119,17 @@ const UpdateProfile = () => {
             </p>
           </div>
 
-          {/* Profile Image Preview Section */}
+          {/* Avatar Upload */}
           <div className="flex flex-col items-center sm:items-start mb-8">
             <div className="relative group">
               <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 border-2 border-violet-500/30 bg-slate-950/80 shadow-xl overflow-hidden relative">
                 <img
-                  src={
-                    preview ||
-                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                  }
+                  src={preview || DEFAULT_AVATAR}
                   alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full transition duration-300 group-hover:scale-105"
                 />
               </div>
 
-              {/* Camera Action Overlay */}
               <label
                 htmlFor="profileImage"
                 className="absolute bottom-1 right-1 bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white p-3 rounded-full cursor-pointer shadow-lg transition-all duration-300 hover:scale-110 border border-white/20"
@@ -147,9 +140,8 @@ const UpdateProfile = () => {
               <input
                 type="file"
                 id="profileImage"
-                name="profileImage"
                 accept="image/*"
-                onChange={handleChange}
+                onChange={handleFileChange}
                 className="hidden"
               />
             </div>
@@ -158,9 +150,8 @@ const UpdateProfile = () => {
             </p>
           </div>
 
-          {/* Form */}
+          {/* Edit Form */}
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Full Name */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
                 Full Name
@@ -174,9 +165,8 @@ const UpdateProfile = () => {
 
                 <input
                   type="text"
-                  name="name"
                   value={name}
-                  onChange={handleChange}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Enter your full name"
                   required
                   className="w-full rounded-2xl border border-white/10 bg-slate-950/60 py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition duration-200"
@@ -184,7 +174,6 @@ const UpdateProfile = () => {
               </div>
             </div>
 
-            {/* Save Button */}
             <button
               type="submit"
               disabled={loading}

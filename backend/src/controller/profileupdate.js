@@ -1,20 +1,12 @@
 import connect from "../schema/model.js";
 import { uploadImage } from "../utils/upload.js";
-import fs from "fs";
+import fs from "fs/promises";
 
 export default async function updateProfile(req, res) {
   try {
-    const { name, email } = req.body;
-
-    if (!name || !email) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and email are required",
-      });
-    }
-
     const userId = req.user.id;
 
+    // Find user
     const findUser = await connect.findById(userId);
 
     if (!findUser) {
@@ -24,25 +16,53 @@ export default async function updateProfile(req, res) {
       });
     }
 
-    // Keep existing image by default
+    const { name } = req.body;
+
+    // Validate name
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    // Keep existing profile image
     let profileImage = findUser.profileImage;
 
-    // Upload new image only if user selected one
+    // Upload new image if selected
     if (req.file) {
-      const img_url = await uploadImage(req.file.path, "profile_images");
-      profileImage = img_url.secure_url;
+      try {
+        const result = await uploadImage(
+          req.file.path,
+          "profile_images"
+        );
 
-      // Delete local uploaded file
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
+        profileImage = result.secure_url;
+
+        // Delete local file after successful upload
+        await fs.unlink(req.file.path);
+      } catch (uploadError) {
+        console.error("Image upload error:", uploadError);
+
+        // Try deleting local file even if upload fails
+        try {
+          await fs.unlink(req.file.path);
+        } catch (fileError) {
+          console.error("File delete error:", fileError);
+        }
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to upload profile image",
+        });
       }
     }
 
+    // Update user
     const updatedUser = await connect.findByIdAndUpdate(
       userId,
       {
-        name,
-        email,
+        name: name.trim(),
         profileImage,
       },
       {
@@ -55,14 +75,12 @@ export default async function updateProfile(req, res) {
       success: true,
       message: "Profile updated successfully",
       user: {
-        id: updatedUser._id,
         name: updatedUser.name,
-        email: updatedUser.email,
         profileImage: updatedUser.profileImage,
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Update profile error:", error);
 
     return res.status(500).json({
       success: false,
