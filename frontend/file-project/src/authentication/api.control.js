@@ -1,9 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+// Use Vite environment variable if available, falling back to Render production or local dev
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://ai-build-project-backend.onrender.com";
+
 const api = axios.create({
-  baseURL:"https://ai-build-project-backend.onrender.com",
-  withCredentials: true,
+  baseURL: API_BASE_URL,
+  withCredentials: true, // Enables cross-origin cookie sharing
 });
 
 // =========================
@@ -19,22 +24,15 @@ const handleError = (error) => {
     "Something went wrong";
 
   toast.error(message);
-
   throw error;
 };
 
 // =========================
 // SIGNUP
 // =========================
-export async function signup({
-  email,
-  name,
-  password,
-  profileImage,
-}) {
+export async function signup({ email, name, password, profileImage }) {
   try {
     const formData = new FormData();
-
     formData.append("email", email);
     formData.append("name", name);
     formData.append("password", password);
@@ -43,13 +41,11 @@ export async function signup({
       formData.append("profileImage", profileImage);
     }
 
-    const { data } = await api.post(
-      "/api/auth/register",
-      formData
-    );
+    const { data } = await api.post("/api/auth/register", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     toast.success(data?.message || "Registration successful");
-
     return data;
   } catch (error) {
     handleError(error);
@@ -67,7 +63,6 @@ export async function login({ email, password }) {
     });
 
     toast.success(data?.message || "Login successful");
-
     return data;
   } catch (error) {
     handleError(error);
@@ -80,9 +75,7 @@ export async function login({ email, password }) {
 export async function logout() {
   try {
     const { data } = await api.get("/api/auth/logout");
-
-    toast.success(data?.message || "Logged out");
-
+    toast.success(data?.message || "Logged out successfully");
     return data;
   } catch (error) {
     handleError(error);
@@ -97,7 +90,7 @@ export async function userMe() {
     const { data } = await api.get("/api/auth/user");
     return data;
   } catch (error) {
-    // Ignore these errors when app loads
+    // Gracefully handle unauthenticated/missing session state on page load
     if (
       error.response?.status === 401 ||
       error.response?.status === 404
@@ -105,7 +98,7 @@ export async function userMe() {
       return null;
     }
 
-    console.error(error.response?.data || error.message);
+    console.error("Fetch current user failed:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -121,17 +114,15 @@ export async function generateInterview({
   try {
     const formData = new FormData();
 
-    formData.append("resume", resume);
-    formData.append("selfDescription", selfDescription);
-    formData.append("jobDescription", jobDescription);
+    if (resume) formData.append("resume", resume);
+    if (selfDescription) formData.append("selfDescription", selfDescription);
+    if (jobDescription) formData.append("jobDescription", jobDescription);
 
-    const { data } = await api.post(
-      "/api/interview/generate",
-      formData
-    );
+    const { data } = await api.post("/api/interview/generate", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-    toast.success(data?.message);
-
+    toast.success(data?.message || "Interview generated successfully");
     return data;
   } catch (error) {
     handleError(error);
@@ -147,10 +138,7 @@ export async function getInterviewReportById(interviewId) {
       throw new Error("Interview ID is required");
     }
 
-    const { data } = await api.get(
-      `/api/interview/report/${interviewId}`
-    );
-
+    const { data } = await api.get(`/api/interview/report/${interviewId}`);
     return data;
   } catch (error) {
     handleError(error);
@@ -163,7 +151,6 @@ export async function getInterviewReportById(interviewId) {
 export async function getAllinterviewReport() {
   try {
     const { data } = await api.get("/api/all");
-
     return data;
   } catch (error) {
     handleError(error);
@@ -171,72 +158,76 @@ export async function getAllinterviewReport() {
 }
 
 // =========================
-// UPDATE PROFILEimport api from "./axios"; // or your API instance setup
-
-
+// UPDATE PROFILE
+// =========================
 export async function updateProfile({ name, profileImage }) {
   try {
     const formData = new FormData();
     if (name) formData.append("name", name);
     if (profileImage) formData.append("profileImage", profileImage);
 
-    const { data } = await api.put("/api/profile/update", formData);
-    toast.success(data?.message);
+    const { data } = await api.put("/api/profile/update", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    toast.success(data?.message || "Profile updated successfully");
     return data;
   } catch (error) {
     handleError(error);
   }
 }
+
 // =========================
 // DELETE PROFILE
 // =========================
 export async function deleteProfile() {
   try {
-    const { data } = await api.delete(
-      "/api/profile/delete"
-    );
-
-    toast.success(data?.message);
-
+    const { data } = await api.delete("/api/profile/delete");
+    toast.success(data?.message || "Profile deleted successfully");
     return data;
   } catch (error) {
     handleError(error);
   }
 }
 
-
-
-export function getAdmin(data){
+// =========================
+// ADMIN ACCESS
+// =========================
+export async function getAdmin() {
   try {
-    const {data}=api.get("/api/admin");
-    return data
+    const { data } = await api.get("/api/admin");
+    return data;
   } catch (error) {
-        if (
+    if (
       error.response?.status === 401 ||
       error.response?.status === 404
     ) {
       return null;
     }
 
-    console.error(error.response?.data || error.message);
+    console.error("Get admin failed:", error.response?.data || error.message);
     throw error;
   }
 }
 
-export function getAlluser(){
+// =========================
+// GET ALL ACTIVE USERS
+// =========================
+export async function getAlluser() {
   try {
-    const {data}=api.get("/api/active_user")
-    return data
+    const { data } = await api.get("/api/active_user");
+    return data;
   } catch (error) {
-      if (
+    if (
       error.response?.status === 401 ||
       error.response?.status === 404
     ) {
       return null;
     }
 
-    console.error(error.response?.data || error.message);
+    console.error("Get active users failed:", error.response?.data || error.message);
     throw error;
-    
   }
 }
+
+export default api;

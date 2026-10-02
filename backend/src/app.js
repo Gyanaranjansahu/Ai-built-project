@@ -18,16 +18,33 @@ import profileRouter from "./router/profile.js";
 import AdminAccess from "./router/adminrouter.js";
 
 const app = express();
-// Middlewares
-app.use(cookieParser());
 
+// Allowed Origins List (Evaluates env variables + fallbacks)
+const allowedOrigins = [
+  process.env.FRONT_END,
+  "https://ai-resume-analyzer-app-five.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+].filter(Boolean); // Clean out undefined/empty variables
+
+// Middlewares
 app.use(
   cors({
-    origin:"process.env.FRONT_END",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, Postman, server-to-server)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS policy error: Origin ${origin} is not allowed`));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -50,5 +67,6 @@ app.use("/api/interview", interviewRouter);
 
 app.use("/api/profile", profileRouter);
 
-app.use("/api",AdminAccess);
+app.use("/api", AdminAccess);
+
 export default app;
