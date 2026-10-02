@@ -91,14 +91,14 @@ export async function userMe() {
     return data;
   } catch (error) {
     // Gracefully handle unauthenticated/missing session state on page load
-    if (
-      error.response?.status === 401 ||
-      error.response?.status === 404
-    ) {
+    if (error.response?.status === 401 || error.response?.status === 404) {
       return null;
     }
 
-    console.error("Fetch current user failed:", error.response?.data || error.message);
+    console.error(
+      "Fetch current user failed:",
+      error.response?.data || error.message,
+    );
     throw error;
   }
 }
@@ -198,10 +198,7 @@ export async function getAdmin() {
     const { data } = await api.get("/api/admin");
     return data;
   } catch (error) {
-    if (
-      error.response?.status === 401 ||
-      error.response?.status === 404
-    ) {
+    if (error.response?.status === 401 || error.response?.status === 404) {
       return null;
     }
 
@@ -218,14 +215,14 @@ export async function getAlluser() {
     const { data } = await api.get("/api/active_user");
     return data;
   } catch (error) {
-    if (
-      error.response?.status === 401 ||
-      error.response?.status === 404
-    ) {
+    if (error.response?.status === 401 || error.response?.status === 404) {
       return null;
     }
 
-    console.error("Get active users failed:", error.response?.data || error.message);
+    console.error(
+      "Get active users failed:",
+      error.response?.data || error.message,
+    );
     throw error;
   }
 }
