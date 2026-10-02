@@ -53,12 +53,17 @@ async function UserLogin(req, res) {
     );
 
     // Set Cookie
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "none",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+    const isProduction =
+      process.env.NODE_ENV === "production" ||
+      !!process.env.RENDER ||
+      !!process.env.VERCEL;
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     return res.status(200).json({
       success: true,
       message: "Login Successfully",
