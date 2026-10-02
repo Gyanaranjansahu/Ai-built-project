@@ -147,6 +147,10 @@ const deleteUserProfile=async()=>{
 }
 
 
+const adminRequest=(data)=>{
+
+}
+
 
   return {
     user,

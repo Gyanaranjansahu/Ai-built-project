@@ -13,6 +13,7 @@ import MatchScore from "../src/dashboard/MatchScore.jsx";
 import PreparationPlan from "../src/dashboard/PreparationPlan.jsx";
 import Profile from "./dashboard/Profile.jsx";
 import UpdateProfile from "./dashboard/Update.jsx";
+import AdminLogin from "./Admin/AdminLogin.jsx";
 
 const Home = lazy(() => import("./components/Home.jsx"));
 const Login = lazy(() => import("./page/login.jsx"));
@@ -63,6 +64,11 @@ export default function App() {
           <Route path="profile" element={<Profile/>}/>
           <Route path="update-profile" element={<UpdateProfile/>}/>
           </Route>
+
+
+          {/* admin Login  */}
+
+          <Route path="/admin_login" element={<AdminLogin/>}/>
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />

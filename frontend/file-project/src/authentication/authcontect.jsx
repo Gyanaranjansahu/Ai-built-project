@@ -1,10 +1,11 @@
 import { createContext, useEffect, useState } from "react";
-import { userMe, getInterviewReportById } from "./api.control";
+import { userMe, getInterviewReportById, getAdmin } from "./api.control";
 
 export const authContext = createContext();
 
 export function Authprovider({ children }) {
   const [user, setUser] = useState(null);
+  const[admin,setAdmin]= useState(null)
   const [authLoading, setAuthLoading] = useState(true);
 
   const [report, setReport] = useState(null);
@@ -53,9 +54,32 @@ export function Authprovider({ children }) {
     }
   };
 
+
   useEffect(() => {
     refreshUser();
   }, []);
+ const refreshAdmin = async () => {
+    setAdminLoading(true);
+
+    try {
+      const data = await getAdmin();
+
+      if (data) {
+        setAdmin(data);
+      } else {
+        setAdmin(null);
+      }
+    } catch (error) {
+      console.error(
+        "Admin Auth Check:",
+        error.response?.data?.message || error.message
+      );
+
+      setAdmin(null);
+    } finally {
+      setAdminLoading(false);
+    }
+  };
 
   return (
     <authContext.Provider
@@ -72,6 +96,8 @@ export function Authprovider({ children }) {
         setReports,
 
         getReport,
+
+        admin
       }}
     >
       {children}

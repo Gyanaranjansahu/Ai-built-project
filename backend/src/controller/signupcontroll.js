@@ -1,14 +1,18 @@
-import sendEmail from "../config/mailer.js";
+import sendEmail, { createClassicWelcomeEmail } from "../config/mailer.js";
 import connect from "../schema/model.js";
 import bcrypt from "bcrypt";
 import fs from "fs";
 import { uploadImage } from "../utils/upload.js";
 
 export default async function add(req, res) {
+  let filePath = null;
+
   try {
     const { name, email, password } = req.body;
 
-    // 1. Basic empty field check
+    // =====================================================
+    // 1. BASIC VALIDATION
+    // =====================================================
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -16,8 +20,37 @@ export default async function add(req, res) {
       });
     }
 
-    // 2. Pre-check if user already exists
-    const existingUser = await connect.findOne({ email });
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanName) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    if (!cleanEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    if (!password.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required",
+      });
+    }
+
+    // =====================================================
+    // 2. CHECK IF USER ALREADY EXISTS
+    // =====================================================
+    const existingUser = await connect.findOne({
+      email: cleanEmail,
+    });
+
     if (existingUser) {
       return res.status(409).json({
         success: false,
@@ -25,8 +58,33 @@ export default async function add(req, res) {
       });
     }
 
-    // 3. Handle File uploads
+    // =====================================================
+    // 3. CREATE ADMIN IF ADMIN DOES NOT EXIST
+    // =====================================================
+    const checkAdmin = await connect.findOne({
+      role: "admin",
+    });
+
+    if (!checkAdmin) {
+      const adminPassword = await bcrypt.hash("Admin@2005", 10);
+
+      await connect.create({
+        name: "gyana",
+        email: "gyanaadmin@gmail.com",
+        password: adminPassword,
+        profileImage:
+          "https://res.cloudinary.com/xe0gnpw8/image/upload/v1698234567/default-profile-image.png",
+        role: "admin",
+      });
+
+      console.log("Admin created successfully");
+    }
+
+    // =====================================================
+    // 4. CHECK PROFILE IMAGE
+    // =====================================================
     const file = req.file;
+
     if (!file) {
       return res.status(400).json({
         success: false,
@@ -34,73 +92,72 @@ export default async function add(req, res) {
       });
     }
 
-    const path = file.path;
-    const imageUrl = await uploadImage(path, "profile_images");
+    filePath = file.path;
 
-    // 4. Hash password and create user in database
+    // =====================================================
+    // 5. UPLOAD IMAGE TO CLOUDINARY
+    // =====================================================
+    const imageResult = await uploadImage(filePath, "profile_images");
+
+    if (!imageResult || !imageResult.secure_url) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to upload profile image",
+      });
+    }
+
+    const profileImage = imageResult.secure_url;
+
+    // =====================================================
+    // 6. HASH PASSWORD
+    // =====================================================
     const hashpass = await bcrypt.hash(password, 10);
+
+    // =====================================================
+    // 7. CREATE USER
+    // =====================================================
     const user = await connect.create({
-      name,
-      email,
+      name: cleanName,
+      email: cleanEmail,
       password: hashpass,
-      profileImage: imageUrl.secure_url,
+      profileImage: profileImage,
+      role: "user",
     });
 
-    // Safe local cleanup immediately after DB save
-    if (fs.existsSync(path)) {
-      fs.unlinkSync(path);
+    console.log("User created:", user.email);
+
+    // =====================================================
+    // 8. DELETE LOCAL IMAGE
+    // =====================================================
+    try {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log("Local image deleted");
+      }
+      filePath = null;
+    } catch (fileError) {
+      console.error("Failed to delete local image:", fileError.message);
     }
-    console.log(user.email);
-    
+
+    // =====================================================
+    // 9. SEND WELCOME EMAIL (Classic Luxury Template)
+    // =====================================================
     try {
       await sendEmail({
         to: user.email,
-        subject: "Welcome to AI Resume Analyzer 🎉",
-        text: `Welcome ${user.name}! Your account has been created successfully.`,
-        html: `
-          <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #f5f7fb;">
-            <div style="background-color: #ffffff; border-radius: 12px; padding: 40px; border: 1px solid #e5e7eb;">
-              <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="margin: 0; color: #4f46e5; font-size: 28px;">AI Resume Analyzer</h1>
-                <p style="margin: 8px 0 0; color: #6b7280; font-size: 14px;">Build a stronger resume. Prepare for better opportunities.</p>
-              </div>
-              <h2 style="color: #111827; font-size: 22px; margin-bottom: 15px;">Welcome, ${user.name}! 👋</h2>
-              <p style="color: #4b5563; font-size: 15px; line-height: 1.7;">
-                Thank you for creating your account with <strong>AI Resume Analyzer</strong>. Your account is now ready to help you analyze, improve, and optimize your resume.
-              </p>
-              <div style="background-color: #f8f9ff; border-radius: 10px; padding: 20px; margin: 25px 0;">
-                <p style="margin: 0 0 12px; font-weight: bold; color: #111827;">What you can do:</p>
-                <p style="margin: 8px 0; color: #4b5563;">✓ Analyze your resume</p>
-                <p style="margin: 8px 0; color: #4b5563;">✓ Check your ATS score</p>
-                <p style="margin: 8px 0; color: #4b5563;">✓ Identify skill gaps</p>
-                <p style="margin: 8px 0; color: #4b5563;">✓ Get personalized interview preparation</p>
-              </div>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="https://ai-resume-analyzer-app-five.vercel.app/" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 7px; font-size: 15px; font-weight: bold;">
-                  Start Analyzing Your Resume
-                </a>
-              </div>
-              <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
-                We're excited to have you on board. Start by uploading your resume and let AI help you understand where you stand and how you can improve.
-              </p>
-              <p style="color: #4b5563; font-size: 14px; margin-top: 30px;">
-                Best regards,<br>
-                <strong>AI Resume Analyzer Team</strong>
-              </p>
-            </div>
-            <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
-              <p style="margin: 5px 0;">© 2026 AI Resume Analyzer</p>
-              <p style="margin: 5px 0;">This is an automated email. Please do not reply.</p>
-            </div>
-          </div>
-        `,
+        subject: "Welcome to ResumeAI — Your Intelligent Career Copilot",
+        text: `Welcome ${user.name}! Your ResumeAI account has been created successfully. You can now analyze your resume, calculate your ATS score, and generate tailored interview preparation plans.`,
+        html: createClassicWelcomeEmail({ name: user.name }),
       });
+      console.log("Welcome email sent successfully");
     } catch (emailError) {
-      console.error("⚠️ Non-critical Error: Email failed to send.", emailError.message);
-      // Swallowed inside inner catch so signup API returns 201 successfully
+      // Email failure should NOT fail signup
+      console.error("Welcome email notice:", emailError.message);
     }
 
-    // 7. Send final response
+    // =====================================================
+    // 10. SUCCESS RESPONSE
+    // =====================================================
     return res.status(201).json({
       success: true,
       message: "Signup successfully",
@@ -108,30 +165,48 @@ export default async function add(req, res) {
         id: user._id,
         name: user.name,
         email: user.email,
+        profileImage: user.profileImage,
+        role: user.role,
       },
     });
-  }
-catch (error) {
-    console.error("❌ Signup Error:", error);
+  } catch (error) {
+    console.error("Signup Error:", error);
 
+    // DELETE LOCAL FILE IF ERROR OCCURRED
+    if (filePath) {
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log("Temporary file cleaned");
+        }
+      } catch (fileError) {
+        console.error("File cleanup failed:", fileError.message);
+      }
+    }
+
+    // MONGOOSE VALIDATION ERROR
     if (error.name === "ValidationError") {
       const errors = Object.values(error.errors).map((err) => err.message);
-      return res
-        .status(400)
-        .json({ success: false, message: "Validation Error", errors });
+      return res.status(400).json({
+        success: false,
+        message: "Validation Error",
+        errors,
+      });
     }
 
+    // DUPLICATE KEY ERROR
     if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
-      return res
-        .status(409)
-        .json({ success: false, message: `${field} already exists` });
+      return res.status(409).json({
+        success: false,
+        message: `${field} already exists`,
+      });
     }
 
+    // GENERAL SERVER ERROR
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: error.message,
     });
   }
 }

@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema(
     profileImage: {
       type: String,
       default: "https://res.cloudinary.com/xe0gnpw8/image/upload/v1698234567/default-profile-image.png"
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user"
     }
   },
   {

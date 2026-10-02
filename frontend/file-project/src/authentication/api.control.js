@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: "https://ai-build-project-backend.onrender.com",
+  baseURL:"https://ai-build-project-backend.onrender.com",
   withCredentials: true,
 });
 
@@ -201,5 +201,42 @@ export async function deleteProfile() {
     return data;
   } catch (error) {
     handleError(error);
+  }
+}
+
+
+
+export function getAdmin(data){
+  try {
+    const {data}=api.get("/api/admin");
+    return data
+  } catch (error) {
+        if (
+      error.response?.status === 401 ||
+      error.response?.status === 404
+    ) {
+      return null;
+    }
+
+    console.error(error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export function getAlluser(){
+  try {
+    const {data}=api.get("/api/active_user")
+    return data
+  } catch (error) {
+      if (
+      error.response?.status === 401 ||
+      error.response?.status === 404
+    ) {
+      return null;
+    }
+
+    console.error(error.response?.data || error.message);
+    throw error;
+    
   }
 }

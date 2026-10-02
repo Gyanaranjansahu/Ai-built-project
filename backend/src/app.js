@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 
 // Database
 import connectDB from "./config/database.js";
-
 // Mailer
 import "./config/mailer.js";
 
@@ -16,6 +15,7 @@ import LogoutRoute from "./router/logoutroute.js";
 import userRoute from "./router/userroute.js";
 import interviewRouter from "./router/interview.js";
 import profileRouter from "./router/profile.js";
+import AdminAccess from "./router/adminrouter.js";
 
 const app = express();
 // Middlewares
@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin:process.env.FRONT_END,
+    origin:"process.env.FRONT_END",
     credentials: true,
   })
 );
@@ -49,4 +49,6 @@ app.use("/api/auth", userRoute);
 app.use("/api/interview", interviewRouter);
 
 app.use("/api/profile", profileRouter);
+
+app.use("/api",AdminAccess);
 export default app;

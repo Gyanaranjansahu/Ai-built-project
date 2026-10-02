@@ -44,6 +44,7 @@ async function UserLogin(req, res) {
       {
         id: user._id,
         email: user.email,
+        role:user.role
       },
       process.env.SECRET_KEY,
       {
